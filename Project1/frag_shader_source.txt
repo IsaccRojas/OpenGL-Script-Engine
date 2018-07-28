@@ -1,0 +1,14 @@
+#version 440
+
+in vec3 color;
+in vec2 frag_tex_coords;
+out vec4 Color;
+
+layout(location = 3) uniform sampler2D tex_sampler;
+
+void main() {
+	Color = texture(tex_sampler, frag_tex_coords);
+	if (Color.r == 255.0/255.0 && Color.g == 49.0/255.0 && Color.b == 234.0/255.0) {
+		discard;
+	}
+}
