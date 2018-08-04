@@ -209,7 +209,9 @@ GLint MakeUniform(GLuint program, const char* name) {
 	return loc;
 }
 
-GLuint MakeTexture(GLint typeoftexture, Image img, int amount) {
+GLuint MakeTexture(GLint typeoftexture, Image img, int amount, GLenum active_texture_slot) {
+	glActiveTexture(active_texture_slot);
+
 	GLuint handle;
 	glGenTextures(amount, &(handle));
 	glBindTexture(typeoftexture, handle);
@@ -223,13 +225,16 @@ GLuint MakeTexture(GLint typeoftexture, Image img, int amount) {
 	return handle;
 }
 
-Image MakeTextureImage(GLint typeoftexture, const char* image_source, int amount) {
+Image MakeTextureImage(GLint typeoftexture, const char* image_source, int amount, int texture_unit_int) {
+	glActiveTexture(GL_TEXTURE0 + texture_unit_int);
+
 	Image image;
 	int image_width = 0;
 	int image_height = 0;
 	unsigned char* image_data = SOIL_load_image(image_source, &image_width, &image_height, 0, SOIL_LOAD_RGBA);
 	image.img_width = image_width;
 	image.img_height = image_height;
+	image.texture_unit = texture_unit_int;
 	image.img_data = image_data;
 	image.img_filename = image_source;
 
@@ -237,6 +242,8 @@ Image MakeTextureImage(GLint typeoftexture, const char* image_source, int amount
 	glBindTexture(typeoftexture, image.tex);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.img_width, image.img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.img_data);
+
+	/* FIXME: make variable */
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

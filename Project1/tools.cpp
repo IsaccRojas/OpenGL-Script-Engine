@@ -3,10 +3,11 @@
 vec2::vec2(float p_x, float p_y) : x(p_x), y(p_y) {}
 vec2::vec2() {}
 
-Image::Image(int width, int height, unsigned char* data, const char* filename) : img_width(width), img_height(height), img_data(data), img_filename(filename) {}
+Image::Image(int width, int height, int tex_unit, unsigned char* data, const char* filename) : img_width(width), img_height(height), texture_unit(tex_unit), img_data(data), img_filename(filename) {}
 Image::Image() {
 	img_width = 0;
 	img_height = 0;
+	texture_unit = 0;
 	img_data = NULL;
 	img_filename = NULL;
 }

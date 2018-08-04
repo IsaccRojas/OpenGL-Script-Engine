@@ -18,7 +18,7 @@ Resources::Resources(int gl_majorver, int gl_minorver, int window_w, int window_
 		(*errors)++;
 	}
 
-	for (unsigned n = 0; n < num_attribs; n++) {
+	for (int n = 0; n < num_attribs; n++) {
 		vAttribs.push_back(attribs[n]);
 	}
 
@@ -66,7 +66,7 @@ SDL_Event* Resources::getEvent() {
 }
 
 vec2 Resources::getWindowDims() {
-	return vec2(WINDOW_WIDTH, WINDOW_HEIGHT);
+	return vec2(float(WINDOW_WIDTH), float(WINDOW_HEIGHT));
 }
 
 void Resources::AddAttrib(std::string p_name, int p_index, bool p_bUniform) {

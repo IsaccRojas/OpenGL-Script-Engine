@@ -1,44 +1,36 @@
 #include "SOEnt.h"
 #include "SOBaseScript.h"
-#include "SOProjectile.h"
-#include "SONPC.h"
+#include "SOEntDataBase.h"
 #include "SOPlayer.h"
-#include "SOEffect.h"
+
+DataTag::DataTag() {}
+DataTag::DataTag(std::string tag_name, float tag_n) : name(tag_name), n(tag_n) {}
 
 Dispatcher::Dispatcher() {}
 
 void Dispatcher::dispatch(SOEnt& soent) {
 	soent.base_script();
 }
-void Dispatcher::dispatch(SOProjectile& soprojectile) {
-	soprojectile.base_script();
-}
-void Dispatcher::dispatch(SONPC& sonpc) {
-	sonpc.base_script();
-}
 void Dispatcher::dispatch(SOPlayer& soplayer) {
 	soplayer.base_script();
 }
-void Dispatcher::dispatch(SOEffect& soeffect) {
-	soeffect.base_script();
-}
 
-SOEnt::SOEnt(Entity* Ent, SOBaseScript* master_ptr) {
-	E = Ent;
+SOEnt::SOEnt(EntData EData, Image texture, SOBaseScript* master_ptr) {
+	E = master_ptr->EBuffAlloc(EData.P, texture, 0);
 	master = master_ptr;
-	kill = 0;
-	first_exec = true;
+	data = EData.dt;
+	name = EData.name;
+	ent_type = EData.type;
+	frames = EData.frames;
 }
-
-void SOEnt::first() {}
 
 void SOEnt::base_script() {
-	if (kill == 1)
-		kill_script();
-	if (kill == 2)
-		return;
+	lua_pushlightuserdata(master->L, (void*)this);
+	lua_setglobal(master->L, "this");
+	lua_getglobal(master->L, name.c_str());
+	lua_pcall(master->L, 0, 0, 0);
 }
 
-void SOEnt::anim() {}
-
-void SOEnt::kill_script() {}
+void SOEnt::run(Abstr_Dispatcher &dispatcher) {
+	dispatcher.dispatch(*this);
+}

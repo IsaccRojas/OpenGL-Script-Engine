@@ -5,12 +5,18 @@
 
 #include "ScriptObj.h"
 
+struct EntData;
+
+struct DataTag {
+	DataTag();
+	DataTag(std::string tag_name, float tag_n);
+	std::string name;
+	float n;
+};
+
 class SOBaseScript;
 class SOEnt;
-class SOProjectile;
-class SONPC;
 class SOPlayer;
-class SOEffect;
 
 enum EntType_enum { ET_ENT, ET_PROJECTILE, ET_NPC, ET_PLAYER, ET_EFFECT };
 typedef enum EntType_enum EntType;
@@ -18,36 +24,33 @@ typedef enum EntType_enum EntType;
 class Abstr_Dispatcher {
 public:
 	virtual void dispatch(SOEnt& soent) = 0;
-	virtual void dispatch(SOProjectile& soprojectile) = 0;
-	virtual void dispatch(SONPC& sonpc) = 0;
 	virtual void dispatch(SOPlayer& soplayer) = 0;
-	virtual void dispatch(SOEffect& soeffect) = 0;
 };
 
 class Dispatcher : public Abstr_Dispatcher {
 public:
 	Dispatcher();
 	virtual void dispatch(SOEnt& soent);
-	virtual void dispatch(SOProjectile& soprojectile);
-	virtual void dispatch(SONPC& sonpc);
 	virtual void dispatch(SOPlayer& soplayer);
-	virtual void dispatch(SOEffect& soeffect);
 };
+
+/*
+INDEX 0 - kill
+*/
 
 class SOEnt : public ScriptObj {
 protected:
 	SOBaseScript* master;
 public:
+	std::vector<DataTag> data;
+	std::string name;
 	EntPointer E;
 	EntType ent_type;
+	std::vector<std::vector<float>> frames;
 	int index;
-	int kill;
-	SOEnt(Entity* Ent, SOBaseScript* master_ptr);
-	virtual void first() override;
+	SOEnt(EntData EData, Image texture, SOBaseScript* master_ptr);
 	virtual void base_script() override;
-	virtual void anim();
-	virtual void kill_script();
-	virtual void run(Abstr_Dispatcher &dispatcher) = 0;
+	virtual void run(Abstr_Dispatcher &dispatcher);
 };
 
 #endif

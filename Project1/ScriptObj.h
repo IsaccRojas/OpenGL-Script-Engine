@@ -6,12 +6,17 @@
 #include "Resources.h"
 #include "EBuffer/EBuffer.h"
 
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+
+
 class ScriptObj {
-protected:
-	bool first_exec;
 public:
+	lua_State * L;
 	ScriptObj();
-	virtual void first();
 	virtual void base_script();
 };
 

@@ -42,19 +42,13 @@
     <ClCompile Include="SOEnt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SOProjectile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SOPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SOBaseScript.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SONPC.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SOEffect.cpp">
+    <ClCompile Include="SOEntDataBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,19 +80,13 @@
     <ClInclude Include="SOEnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SOProjectile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SOPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SOBaseScript.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SONPC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SOEffect.h">
+    <ClInclude Include="SOEntDataBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

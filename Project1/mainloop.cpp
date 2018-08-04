@@ -18,15 +18,16 @@ int mloop(Resources* res) {
 
 int setup(Resources* res, float render_unit_size) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	SDL_GL_SetSwapInterval(1);
+	//SDL_GL_SetSwapInterval(1);
 
 	render_unit_size /= 2.0f;
 	glm::mat4 mModel = glm::mat4(1.0f);
 	glm::mat4 mView = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 mProj = glm::ortho(-1.0f * render_unit_size, render_unit_size, -1.0f * render_unit_size, render_unit_size);
 	glm::mat4 mMVP = mProj * mView * mModel;
-	glUniformMatrix4fv(res->vAttribs.at(2).index, 1, GL_FALSE, glm::value_ptr(mMVP));
-	glUniform1f(res->vAttribs.at(3).index, 0.0f);
+	glUniformMatrix4fv(res->vAttribs.at(3).index, 1, GL_FALSE, glm::value_ptr(mMVP));
+	GLint samplers_units[16] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+	glUniform1iv(res->vAttribs.at(4).index, 16, samplers_units);
 
 	return 0;
 }

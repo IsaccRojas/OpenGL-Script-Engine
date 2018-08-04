@@ -23,7 +23,8 @@ public:
 	unsigned char* img_data;
 	const char* img_filename;
 	unsigned tex;
-	Image(int width, int height, unsigned char* data, const char* filename);
+	unsigned texture_unit;
+	Image(int width, int height, int tex_unit, unsigned char* data, const char* filename);
 	Image();
 };
 

@@ -5,17 +5,18 @@
 
 #include "SOEnt.h"
 
+/*
+INDEX 0 - kill
+INDEX 1 - spd
+INDEX 2 - proj_spd
+INDEX 3 - shoot_cooldown
+INDEX 4 - shoot_cooldown_max
+*/
+
 class SOPlayer : public SOEnt {
-	float spd;
-	float proj_spd;
-	float cooldown;
-	float shoot_cd_max;
 public:
-	SOPlayer(Entity* Ent, SOBaseScript* master_ptr);
+	SOPlayer(EntData EData, Image texture, SOBaseScript* master_ptr);
 	void base_script() override;
-	void anim() override;
-	void kill_script() override;
-	void shoot(int dir);
 	void run(Abstr_Dispatcher &dispatcher) override;
 };
 

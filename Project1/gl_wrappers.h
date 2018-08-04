@@ -65,8 +65,8 @@ GLint MakeAttrib(GLuint program, const char* name);
 GLint MakeUniform(GLuint program, const char* name);
 
 /* returns -1 if invalid, index if valid; texture remains binded --REQUIRES OPENGL INITIALIZED*/
-GLuint MakeTexture(GLint typeoftexture, Image img, int amount);
+GLuint MakeTexture(GLint typeoftexture, Image img, int amount, GLenum active_texture_slot);
 /* returns -1 if invalid, index if valid; texture remains binded --REQUIRES OPENGL INITIALIZED*/
-Image MakeTextureImage(GLint typeoftexture, const char* image_source, int amount);
+Image MakeTextureImage(GLint typeoftexture, const char* image_source, int amount, int texture_unit_int);
 
 #endif
