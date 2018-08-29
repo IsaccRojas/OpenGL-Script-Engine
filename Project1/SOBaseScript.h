@@ -6,6 +6,7 @@
 #include "ScriptObj.h"
 #include "SOEntDataBase.h"
 #include "SOPlayer.h"
+#include "SOText.h"
 
 #include <chrono>
 
@@ -17,6 +18,9 @@ class SOBaseScript : public ScriptObj {
 	std::chrono::steady_clock::time_point oldt;
 	std::chrono::steady_clock::time_point newt;
 	SOEntDataBase DB;
+	EBuffer* TBuff;
+	GLBuffer<float>* TVertBuf;
+	GLBuffer<unsigned>* TElBuf;
 	EBuffer* EBuff;
 	GLBuffer<float>* VertBuf;
 	GLBuffer<unsigned>* ElBuf;
@@ -24,22 +28,26 @@ class SOBaseScript : public ScriptObj {
 	Image textures[16];
 	Dispatcher dispatcher;
 	std::vector<SOEnt*> killed_entities;
-	int frame;
+	int frame, cursorx, cursory;
 public:
 	int F;
 	SOBaseScript(Resources* resources);
 
 	Resources getResources();
 	std::vector<SOEnt*> entities;
+	std::vector<SOEnt*> tiles;
 
-	void render();
+	void render(unsigned vbo, unsigned vebo);
 	void base_script() override;
 
 	Entity* EBuffAlloc(Packet p, Image imgTex, int prior);
-	SOEnt* create_ent(EntData ED, Image texture, int priority);
+	int EBuffDealloc(Entity* Ent);
 	SOEnt* gen_ent(std::string name);
 	void del_ent(SOEnt* soentity);
+	Image getTexture(int index);
 	float get_fps();
+
+	void set_map(float* tilepos);
 
 	static int l_gen_ent(lua_State* L);
 	static int l_set_kill(lua_State* L);

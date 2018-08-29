@@ -44,7 +44,7 @@ int SOEntDataBase::load_ents(lua_State* L, std::vector<std::string> names) {
 		std::cout << "Executing '" << (names.at(n) + "_init").c_str() << "'... ";
 		lua_getglobal(L, (names.at(n) + "_init").c_str());
 		// -1: [name]_init
-		if (lua_pcall(L, 0, 0, 0) != 0) {
+		if (lua_isfunction(L, -1) && lua_pcall(L, 0, 0, 0) != 0) {
 			// -1: error string, -2: [name]_init
 			std::cout << "Error during execution: " << lua_tostring(L, -1) << std::endl;
 			break;
@@ -75,7 +75,7 @@ int SOEntDataBase::load_ents(lua_State* L, std::vector<std::string> names) {
 
 		lua_pushnil(L);
 		int i = 0;
-		while (lua_next(L, -2) != 0 && i < table_size) {
+		while (lua_next(L, -2) != 0 && unsigned(i) < table_size) {
 			// -1: value, -2: key, -3: table
 			if (i % 2 == 0)
 				keys.push_back(lua_tostring(L, -1));
@@ -89,12 +89,14 @@ int SOEntDataBase::load_ents(lua_State* L, std::vector<std::string> names) {
 			Dtable.push_back(DataTag(keys.at(n), values.at(n)));
 
 		std::vector<std::vector<float>> sframes;
+		
 		/*
 		i = 0;
 		std::string num = "0";
 		std::string frametable;
 		while (true) {
 			frametable = std::string("_F") + num;
+			std::cout << "\n\tAttempting to access table '" << frametable << "'... ";
 			lua_getglobal(L, frametable.c_str());
 			if (lua_istable(L, -1)) {
 				sframes.push_back({});
@@ -106,13 +108,19 @@ int SOEntDataBase::load_ents(lua_State* L, std::vector<std::string> names) {
 				sframes.at(i).push_back(get_table_entry(L, frametable.c_str(), "v"));
 				sframes.at(i).push_back(get_table_entry(L, frametable.c_str(), "uvw"));
 				sframes.at(i).push_back(get_table_entry(L, frametable.c_str(), "uvh"));
+				std::cout << "Done.";
 			}
-			else
+			else {
+				std::cout << "No such table.";
 				break;
+			}
 			i++;
 			num[0] += 1;
 		}
+		if (sframes.empty())
+			sframes.clear();
 		*/
+		
 		/*
 		while (true) {
 			std::string s = "0";

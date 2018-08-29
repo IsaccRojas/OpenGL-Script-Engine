@@ -14,6 +14,7 @@ struct Packet {
 	Packet();
 	Packet(float X, float Y, float W, float H, float toX, float toY, float tW, float tH, float U, float V, float uvW, float uvH);
 	float x, y, w, h, tox, toy, tw, th, u, v, uvw, uvh;
+	Packet operator+(Packet p);
 };
 
 class Entity {
@@ -58,6 +59,7 @@ public:
 	void dataSetUVDimensions(float uvw, float uvh);
 	void dataReset();
 	void dataFree();
+	Packet dataPacket();
 	unsigned int getID();
 
 	vec2 dataGetPos();
@@ -93,6 +95,7 @@ public:
 	void suvpos(float u, float v);
 	vec2 guvdim();
 	void suvdim(float uvw, float uvh);
+	Packet gpack();
 	int gtu();
 	int gprior();
 	void sprior(int p);

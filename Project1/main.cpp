@@ -11,7 +11,7 @@ int main() {
 		{ "tex_samplers", 4, true }
 	};
 	unsigned int errors = 0;
-	res = new Resources(4, 4, 1024, 1024, 30, 30, "Main Window", "vert_shader_source.txt", "frag_shader_source.txt", attribs, 5, &errors);
+	res = new Resources(4, 4, 1024, 1024, 30, 30, 256.0f, "Main Window", "vert_shader_source.txt", "frag_shader_source.txt", attribs, 5, &errors);
 	if (errors <= 0)
 		mloop(res);
 	delete res;

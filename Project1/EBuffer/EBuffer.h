@@ -42,7 +42,7 @@ public:
 	Entity* getEnt(unsigned int p_ID);
 	unsigned int getEBuff_ID();
 	void update();
-	void erase(Entity* ent);
+	int erase(Entity* ent);
 	/* sets buffer to a concatenation of all entities' data; set dir to 1:increased, -1:decreased, 0:total_reset; set position to -1 if increase/decrease occurred at end of vector (ignored if dir == 0) */
 	void dataResizeReset(int dir, int position);
 	

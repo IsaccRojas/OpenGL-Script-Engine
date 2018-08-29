@@ -51,6 +51,9 @@
     <ClCompile Include="SOEntDataBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SOText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers.h">
@@ -87,6 +90,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SOEntDataBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SOText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

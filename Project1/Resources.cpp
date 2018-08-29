@@ -1,9 +1,10 @@
 #include "Resources.h"
 
-Resources::Resources(int gl_majorver, int gl_minorver, int window_w, int window_h, int window_x, int window_y, std::string window_name, std::string vertex_shader_location, std::string fragment_shader_location, Attrib attribs[], int num_attribs, unsigned int* errors) {
+Resources::Resources(int gl_majorver, int gl_minorver, int window_w, int window_h, int window_x, int window_y, float render_width, std::string window_name, std::string vertex_shader_location, std::string fragment_shader_location, Attrib attribs[], int num_attribs, unsigned int* errors) {
 	*errors = 0;
 	WINDOW_WIDTH = window_w;
 	WINDOW_HEIGHT = window_h;
+	RENDER_WIDTH = render_width;
 	if (MakeSDLGLWindowContext(&window, &context, gl_majorver, gl_minorver, window_x, window_y, WINDOW_WIDTH, WINDOW_HEIGHT, window_name.c_str()) == -1) {
 		std::cout << "Errors initializing window and/or context." << std::endl;
 		(*errors)++;
@@ -34,6 +35,7 @@ Resources::Resources(int gl_majorver, int gl_minorver, int window_w, int window_
 	std::cout << std::endl << *errors << " error(s) during initialization of resources object." << std::endl;
 	if (*errors > 0)
 		getchar();
+	//SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 }
 
 Resources::~Resources() {
@@ -67,6 +69,10 @@ SDL_Event* Resources::getEvent() {
 
 vec2 Resources::getWindowDims() {
 	return vec2(float(WINDOW_WIDTH), float(WINDOW_HEIGHT));
+}
+
+float Resources::getRenderWidth() {
+	return RENDER_WIDTH;
 }
 
 void Resources::AddAttrib(std::string p_name, int p_index, bool p_bUniform) {

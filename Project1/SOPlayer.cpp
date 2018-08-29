@@ -1,7 +1,7 @@
 #include "SOPlayer.h"
 #include "SOBaseScript.h"
 
-SOPlayer::SOPlayer(EntData EData, Image texture, SOBaseScript* master_ptr) : SOEnt(EData, texture, master_ptr) {}
+SOPlayer::SOPlayer(EntData EData, SOBaseScript* master_ptr) : SOEnt(EData, master_ptr) {}
 
 void SOPlayer::base_script() {
 	lua_pushlightuserdata(master->L, (void*)this);

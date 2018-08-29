@@ -188,17 +188,21 @@ void EBuffer::update() {
 	}
 }
 
-void EBuffer::erase(Entity* ent) {
+int EBuffer::erase(Entity* ent) {
 	std::list<Entity>::iterator iter;
 	unsigned n = 0;
 	for (iter = vEnts.begin(); iter != vEnts.end(); iter++, n++)
 		if (iter->ID == ent->ID) break;
-	if (iter != vEnts.end())
+	if (iter != vEnts.end()) {
 		iter = vEnts.erase(iter);
-	vData.erase(vData.begin() + n * Entity::indicesperentityv, vData.begin() + n * Entity::indicesperentityv + Entity::indicesperentityv);
-	for (unsigned n = 0; n < 6; n++)
-		vElements.pop_back();
-	index_offset -= 4;
+		vData.erase(vData.begin() + n * Entity::indicesperentityv, vData.begin() + n * Entity::indicesperentityv + Entity::indicesperentityv);
+		for (unsigned n = 0; n < 6; n++)
+			vElements.pop_back();
+		index_offset -= 4;
+		return 0;
+	}
+	else
+		return -1;
 }
 
 void EBuffer::dataResizeReset(int dir, int position) {

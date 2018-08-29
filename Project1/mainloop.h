@@ -11,6 +11,6 @@
 
 int mloop(Resources* res);
 
-int setup(Resources* res, float render_unit_size);
+int setup(Resources* res);
 
 #endif MAINLOOP_H_

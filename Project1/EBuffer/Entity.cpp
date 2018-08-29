@@ -4,6 +4,9 @@ Packet::Packet() {
 	x = 0; y = 0; w = 0; h = 0; tox = 0; toy = 0; tw = 0; th = 0; u = 0; v = 0; uvw = 0; uvh = 0;
 }
 Packet::Packet(float X, float Y, float W, float H, float toX, float toY, float tW, float tH, float U, float V, float uvW, float uvH) : x(X), y(Y), w(W), h(H), tox(toX), toy(toY), tw(tW), th(tH), u(U), v(V), uvw(uvW), uvh(uvH) {}
+Packet Packet::operator+(Packet p) {
+	return Packet{this->x + p.x, this->y + p.y, this->w + p.w, this->h + p.h, this->tox + p.tox, this->toy + p.toy, this->tw + p.tw, this->th + p.th, this->u + p.u, this->v + p.v, this->uvw + p.uvw, this->uvh + p.uvh};
+}
 
 Entity::Entity(float x, float y, float w, float h, float tox, float toy, float tw, float th, float u, float v, float uvw, float uvh, Image img, int prior) {
 	ID = count_existed;
@@ -219,6 +222,9 @@ void Entity::dataFree() {
 	this->bChangeSinceLastCheck = 1;
 	this->bFree = 1;
 }
+Packet Entity::dataPacket() {
+	return Packet{ X, Y, W, H, toX, toY, tW, tH, U, V, UVW, UVH };
+}
 
 unsigned int Entity::getID() {
 	return ID;
@@ -279,6 +285,7 @@ vec2 EntPointer::guvpos() { return vec2(ent->dataGetUV().x, ent->dataGetUV().y);
 void EntPointer::suvpos(float u, float v) { if (ent != NULL) ent->dataSetUV(u, v); }
 vec2 EntPointer::guvdim() { return vec2(ent->dataGetUVDimensions().x, ent->dataGetUVDimensions().y); }
 void EntPointer::suvdim(float uvw, float uvh) { if (ent != NULL) ent->dataSetUVDimensions(uvw, uvh); }
+Packet EntPointer::gpack() { return ent->dataPacket(); }
 int EntPointer::gtu() { return ent->dataGetTexUnit(); }
 int EntPointer::gprior() { return ent->getPriority(); }
 void EntPointer::sprior(int p) { if (ent != NULL) ent->setPriority(p); }

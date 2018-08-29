@@ -2,7 +2,7 @@
 #define DEBUG_BUFFER
 
 int mloop(Resources* res) {
-	setup(res, 512.0f);
+	setup(res);
 
 	SOBaseScript* main_script = new SOBaseScript(res);
 
@@ -16,11 +16,11 @@ int mloop(Resources* res) {
 	return 0;
 }
 
-int setup(Resources* res, float render_unit_size) {
+int setup(Resources* res) {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	//SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetSwapInterval(1);
 
-	render_unit_size /= 2.0f;
+	float render_unit_size = res->getRenderWidth() / 2.0f;
 	glm::mat4 mModel = glm::mat4(1.0f);
 	glm::mat4 mView = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 mProj = glm::ortho(-1.0f * render_unit_size, render_unit_size, -1.0f * render_unit_size, render_unit_size);

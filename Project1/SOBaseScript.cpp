@@ -1,12 +1,15 @@
 #include "SOBaseScript.h"
 
 SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
-	textures[0] = MakeTextureImage(GL_TEXTURE_2D, "img/sheet.png", 1, 0);
-	textures[1] = MakeTextureImage(GL_TEXTURE_2D, "img/smoke.png", 1, 1);
-
+	textures[ET_PLAYER] = MakeTextureImage(GL_TEXTURE_2D, "img/playernoeyes.png", 1, 1);
+	textures[ET_NPC] = MakeTextureImage(GL_TEXTURE_2D, "img/npcs.png", 1, 2);
+	textures[ET_TILE] = MakeTextureImage(GL_TEXTURE_2D, "img/tileset.png", 1, 3);
+	textures[ET_PROJECTILE] = MakeTextureImage(GL_TEXTURE_2D, "img/projectiles.png", 1, 4);
+	textures[ET_EFFECT] = MakeTextureImage(GL_TEXTURE_2D, "img/effects.png", 1, 5);
+	textures[ET_TEXT] = MakeTextureImage(GL_TEXTURE_2D, "img/text.png", 1, 6);
 	L = luaL_newstate();
 	luaL_openlibs(L);
-	
+
 	lua_pushcfunction(L, SOBaseScript::l_gen_ent);
 	lua_setglobal(L, "gen_ent");
 	lua_pushcfunction(L, SOBaseScript::l_set_kill);
@@ -62,34 +65,98 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 
 	std::cout << DB.load_all(L, "script") << " error(s) loading scripts." << std::endl;
 	DB.load_ents(L, {
-		"NPC",
-		"Effect",
-		"Projectile",
-		"Player",
-		"NPC2",
-		"Projectile2"
+		"MPlayer",
+		"Fume",
+		"Smoker",
+		"Wizard",
+		"Tile0",
+		"Tile1",
+		"BasicShot",
+		"BasicShotPuff",
+		"Text"
 		});
+
+	TBuff = new EBuffer();
+	TVertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(TBuff->vData), GL_DYNAMIC_DRAW);
+	TElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(TBuff->vElements), GL_DYNAMIC_DRAW);
+
+	float map[] = {
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+	};
+	float map2[] = {
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+		0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	};
+	set_map(map2);
+
+	TBuff->update();
+	TVertBuf->update();   
+	TElBuf->update();
 
 	EBuff = new EBuffer();
 	VertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(EBuff->vData), GL_DYNAMIC_DRAW);
 	ElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(EBuff->vElements), GL_DYNAMIC_DRAW);
 
-	entities.push_back(new SOPlayer(DB.get("Player"), textures[0], this));
-	entities.push_back(new SOEnt(DB.get("Effect"), textures[1], this));
+	entities.push_back(new SOPlayer(DB.get("MPlayer"), this));
 	entities.at(0)->index = 0;
+	entities.push_back(new SOText(DB.get("Text"), this));
 	entities.at(1)->index = 1;
+	std::string str = "This flavored 'water' is great! (ir51@aol.com)";
+	str = "Fuck off, b-baka chan!";
+	dynamic_cast<SOText*>(entities.at(1))->b_set(str.size(), str.c_str());
+
 	srand(unsigned(time(NULL))); // ex: rand() % 10 + 1 is a number in the range [1, 10]
 
 	lua_pushlightuserdata(L, (void*)this);
 	lua_setglobal(L, "master");
 	lua_pushlightuserdata(L, (void*)(entities.at(0)));
 	lua_setglobal(L, "player");
+	//lua_pushnumber(L, this->res->getWindowDims().x);
+	lua_pushnumber(L, this->res->getRenderWidth());
+	lua_setglobal(L, "WIN_WIDTH");
+	//lua_pushnumber(L, this->res->getWindowDims().y);
+	lua_pushnumber(L, this->res->getRenderWidth());
+	lua_setglobal(L, "WIN_HEIGHT");
+
+	//gen_ent("Smoker");
 
 	frame = 0;
+	cursorx = 0;
+	cursory = 0;
 }
 
-void SOBaseScript::render() {
-	glClear(GL_COLOR_BUFFER_BIT);
+void SOBaseScript::render(unsigned vbo, unsigned vebo) {
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vebo);
 
 	glEnableVertexAttribArray(res->vAttribs.at(0).index);
 	glVertexAttribPointer(res->vAttribs.at(0).index, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, 0);
@@ -104,6 +171,30 @@ void SOBaseScript::render() {
 }
 
 void SOBaseScript::base_script() {
+	//int oldcursx = cursorx;
+	//int oldcursy = cursory;
+	auto click = SDL_GetMouseState(&cursorx, &cursory);
+	cursorx = int(cursorx * (res->getRenderWidth() / res->getWindowDims().x));
+	cursory = int(cursory * (res->getRenderWidth() / res->getWindowDims().y));
+	cursorx = int(cursorx - (res->getRenderWidth() / 2));
+	cursory = int(-1 * (cursory - (res->getRenderWidth() / 2)));
+	//if (oldcursx != cursorx || oldcursy != cursory)
+	//	std::cout << "x " << cursorx << " y " << cursory << std::endl;
+	lua_pushnumber(L, cursorx);
+	lua_setglobal(L, "CURSOR_X");
+	lua_pushnumber(L, cursory);
+	lua_setglobal(L, "CURSOR_Y");
+	if (click & SDL_BUTTON(SDL_BUTTON_LEFT))
+		lua_pushnumber(L, 1);
+	else
+		lua_pushnumber(L, 0);
+	lua_setglobal(L, "MOUSE_LEFT");
+	if (click & SDL_BUTTON(SDL_BUTTON_RIGHT))
+		lua_pushnumber(L, 1);
+	else
+		lua_pushnumber(L, 0);
+	lua_setglobal(L, "MOUSE_RIGHT");
+
 	if (frame % 105 == 0) {
 		int x = int(bool(rand() % 2));
 		int y = int(bool(rand() % 2));
@@ -111,11 +202,11 @@ void SOBaseScript::base_script() {
 		if (x == 0) x = -1;
 		if (y == 0) y = -1;
 		if (two == 2)
-			gen_ent("NPC2");
+			0;//gen_ent("NPC2");
 		else
-			gen_ent("NPC");
-		entities.back()->E.spos(272.0f * float(x), 272.0f * float(y));
-		entities.back()->index = entities.size() - 1;
+			0;//gen_ent("NPC");
+		//entities.back()->E.spos(272.0f * float(x), 272.0f * float(y));
+		//entities.back()->index = entities.size() - 1;
 	}
 
 	for (unsigned n = 0; n < entities.size(); n++) {
@@ -127,30 +218,30 @@ void SOBaseScript::base_script() {
 		del_ent(killed_entities.at(n));
 	killed_entities.clear();
 	
+	glClear(GL_COLOR_BUFFER_BIT);
+	render(TVertBuf->getIndex(), TElBuf->getIndex());
 	EBuff->update();
 	VertBuf->update();
 	ElBuf->update();
-	render();
+	render(VertBuf->getIndex(), ElBuf->getIndex());
 	SDL_GL_SwapWindow(res->getWindow());
 	//std::cout << "FPS " << get_fps() << std::endl;
 	frame++;
 }
 
 Entity* SOBaseScript::EBuffAlloc(Packet p, Image imgTex, int prior) {
-	return EBuff->allocateEntity(p, imgTex, prior);
+	if (imgTex.texture_unit == ET_TILE)
+		return TBuff->allocateEntity(p, imgTex, prior);
+	else
+		return EBuff->allocateEntity(p, imgTex, prior);
 }
 
-SOEnt* SOBaseScript::create_ent(EntData ED, Image texture, int priority) {
-	if (ED.type == ET_ENT)
-		return new SOEnt(ED, texture, this);
-	else if (ED.type == ET_PLAYER)
-		return new SOPlayer(ED, texture, this);
-	else
-		return NULL;
+int SOBaseScript::EBuffDealloc(Entity* Ent) {
+	return EBuff->erase(Ent);
 }
 
 SOEnt* SOBaseScript::gen_ent(std::string name) {
-	entities.push_back(new SOEnt(DB.get(name.c_str()), DB.get(name.c_str()).type == ET_EFFECT ? textures[1] : textures[0], this));
+	entities.push_back(new SOEnt(DB.get(name.c_str()), this));
 	entities.back()->index = entities.size() - 1;
 	return entities.back();
 }
@@ -163,11 +254,32 @@ void SOBaseScript::del_ent(SOEnt* soentity) {
 		(entities.at(n)->index)--;
 }
 
+Image SOBaseScript::getTexture(int index) {
+	return textures[index];
+}
+
 float SOBaseScript::get_fps() {
 	newt = std::chrono::steady_clock::now();
 	auto time = std::chrono::duration_cast<std::chrono::milliseconds>(oldt - newt).count();
 	oldt = newt;
 	return fabs(1000.0f / float(time));
+}
+
+void SOBaseScript::set_map(float* tilepos) {
+
+	for (int n = 0; n < 16; n++) {
+		for (int m = 0; m < 16; m++) {
+			if (tilepos[(n * 16) + m])
+				tiles.push_back(new SOEnt(DB.get("Tile1"), this));
+			else {
+				tiles.push_back(new SOEnt(DB.get("Tile0"), this));
+				if (n - 1 >= 0 && tilepos[((n - 1) * 16) + m])
+					tiles.back()->E.suvpos(48, tiles.back()->E.guvpos().y);
+			}
+			tiles.back()->E.spos(float(16 * (m + 1) - 128 - 8), float(-1 * (16 * (n + 1) - 128) + 8));
+			tiles.back()->index = tiles.size() - 1;
+		}
+	}
 }
 
 Resources SOBaseScript::getResources() {
