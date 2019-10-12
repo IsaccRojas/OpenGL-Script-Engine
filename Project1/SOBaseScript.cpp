@@ -1,15 +1,20 @@
 #include "SOBaseScript.h"
 
 SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
+	//store each texture's data and information in array
 	textures[ET_PLAYER] = MakeTextureImage(GL_TEXTURE_2D, "img/playernoeyes.png", 1, 1);
 	textures[ET_NPC] = MakeTextureImage(GL_TEXTURE_2D, "img/npcs.png", 1, 2);
 	textures[ET_TILE] = MakeTextureImage(GL_TEXTURE_2D, "img/tileset.png", 1, 3);
 	textures[ET_PROJECTILE] = MakeTextureImage(GL_TEXTURE_2D, "img/projectiles.png", 1, 4);
 	textures[ET_EFFECT] = MakeTextureImage(GL_TEXTURE_2D, "img/effects.png", 1, 5);
 	textures[ET_TEXT] = MakeTextureImage(GL_TEXTURE_2D, "img/text.png", 1, 6);
+
+	
+	/*
 	L = luaL_newstate();
 	luaL_openlibs(L);
 
+	//push C functions to lua
 	lua_pushcfunction(L, SOBaseScript::l_gen_ent);
 	lua_setglobal(L, "gen_ent");
 	lua_pushcfunction(L, SOBaseScript::l_set_kill);
@@ -20,6 +25,10 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	lua_setglobal(L, "get_master");
 	lua_pushcfunction(L, SOBaseScript::l_get_ent);
 	lua_setglobal(L, "get_ent");
+	lua_pushcfunction(L, SOBaseScript::l_get_ent_all_t);
+	lua_setglobal(L, "get_ent_all_t");
+	lua_pushcfunction(L, SOBaseScript::l_get_ent_all_tn);
+	lua_setglobal(L, "get_ent_all_tn");
 	lua_pushcfunction(L, SOBaseScript::l_get_ent_type);
 	lua_setglobal(L, "get_ent_type");
 	lua_pushcfunction(L, SOBaseScript::l_get_entcount);
@@ -27,6 +36,7 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	lua_pushcfunction(L, SOBaseScript::l_get_input);
 	lua_setglobal(L, "get_input");
 
+	//entity-specific "get" C functions
 	lua_pushcfunction(L, SOBaseScript::l_getpos);
 	lua_setglobal(L, "getpos");
 	lua_pushcfunction(L, SOBaseScript::l_getdim);
@@ -44,6 +54,7 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	lua_pushcfunction(L, SOBaseScript::l_getdatai);
 	lua_setglobal(L, "getdatai");
 
+	//entity-specific "set" C functions
 	lua_pushcfunction(L, SOBaseScript::l_setpos);
 	lua_setglobal(L, "setpos");
 	lua_pushcfunction(L, SOBaseScript::l_setdim);
@@ -62,9 +73,18 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	lua_setglobal(L, "setdatai");
 	lua_pushcfunction(L, SOBaseScript::l_setframe);
 	lua_setglobal(L, "setframe");
+	lua_pushcfunction(L, SOBaseScript::l_settext);
+	lua_setglobal(L, "settext");
+	*/
+	//define lua state
+	
 
-	std::cout << DB.load_all(L, "script") << " error(s) loading scripts." << std::endl;
-	DB.load_ents(L, {
+	//find and load all scripts in directory ../scripts
+	//std::cout << DB.load_all(L, "script") << " error(s) loading scripts." << std::endl;
+	//std::cout << DB.load_all("script") << "error(s) loading scripts." << std::endl;
+	//TODO: change to allow loading from names stored after executing DB.load_all()
+	/*
+	DB.load_ent_data(L, {
 		"MPlayer",
 		"Fume",
 		"Smoker",
@@ -73,8 +93,13 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 		"Tile1",
 		"BasicShot",
 		"BasicShotPuff",
-		"Text"
+		"BasicShotExplode",
+		"Text",
+		"DamageText",
+		"SmokerPuff"
 		});
+	*/
+	//DB.load_ent_data(L, "objInit");
 
 	TBuff = new EBuffer();
 	TVertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(TBuff->vData), GL_DYNAMIC_DRAW);
@@ -126,13 +151,18 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	VertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(EBuff->vData), GL_DYNAMIC_DRAW);
 	ElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(EBuff->vElements), GL_DYNAMIC_DRAW);
 
+	/*
 	entities.push_back(new SOPlayer(DB.get("MPlayer"), this));
 	entities.at(0)->index = 0;
 	entities.push_back(new SOText(DB.get("Text"), this));
 	entities.at(1)->index = 1;
+	entities.push_back(new SOEnt(DB.get("Smoker"), this));
+	entities.at(2)->index = 2;
 	std::string str = "This flavored 'water' is great! (ir51@aol.com)";
 	str = "Fuck off, b-baka chan!";
 	dynamic_cast<SOText*>(entities.at(1))->b_set(str.size(), str.c_str());
+	*/
+	
 
 	srand(unsigned(time(NULL))); // ex: rand() % 10 + 1 is a number in the range [1, 10]
 
@@ -241,7 +271,7 @@ int SOBaseScript::EBuffDealloc(Entity* Ent) {
 }
 
 SOEnt* SOBaseScript::gen_ent(std::string name) {
-	entities.push_back(new SOEnt(DB.get(name.c_str()), this));
+	//entities.push_back(new SOEnt(DB.get(name.c_str()), this));
 	entities.back()->index = entities.size() - 1;
 	return entities.back();
 }
@@ -269,10 +299,11 @@ void SOBaseScript::set_map(float* tilepos) {
 
 	for (int n = 0; n < 16; n++) {
 		for (int m = 0; m < 16; m++) {
-			if (tilepos[(n * 16) + m])
-				tiles.push_back(new SOEnt(DB.get("Tile1"), this));
+			if (tilepos[(n * 16) + m]) {
+				//tiles.push_back(new SOEnt(DB.get("Tile1"), this));
+			}
 			else {
-				tiles.push_back(new SOEnt(DB.get("Tile0"), this));
+				//tiles.push_back(new SOEnt(DB.get("Tile0"), this));
 				if (n - 1 >= 0 && tilepos[((n - 1) * 16) + m])
 					tiles.back()->E.suvpos(48, tiles.back()->E.guvpos().y);
 			}
@@ -302,12 +333,40 @@ int SOBaseScript::l_get_master(lua_State* L) {
 	return 0;
 }
 int SOBaseScript::l_get_ent(lua_State* L) {
-	SOEnt* Ent = (((SOBaseScript*)lua_touserdata(L, 1))->entities.at((int)lua_tonumber(L, 2)));
-	if (Ent != nullptr)
-		lua_pushlightuserdata(L, Ent);
-	else
-		lua_pushlightuserdata(L, NULL);
+	if (lua_isnumber(L, 2)) {
+		SOEnt* Ent = (((SOBaseScript*)lua_touserdata(L, 1))->entities.at((int)lua_tonumber(L, 2)));
+		if (Ent != nullptr)
+			lua_pushlightuserdata(L, Ent);
+		else
+			lua_pushlightuserdata(L, NULL);
+	}
 	return 1;
+}
+int SOBaseScript::l_get_ent_all_t(lua_State* L) {
+	//...
+	return 1;
+}
+int SOBaseScript::l_get_ent_all_tn(lua_State* L) {
+	if (lua_isnumber(L, 2) && lua_isstring(L, 3)) {
+		SOBaseScript* scriptptr = (SOBaseScript*)lua_touserdata(L, 1);
+		unsigned size = scriptptr->entities.size();
+		unsigned type = (unsigned)lua_tonumber(L, 2);
+		std::string name = lua_tostring(L, 3);
+		SOEnt* Ent;
+		lua_newtable(L);
+		unsigned ind = 0;
+		for (unsigned i = 0; i < size; i++) {
+			Ent = scriptptr->entities.at(i);
+			if (Ent->ent_type == type && Ent->name == name) {
+				lua_pushnumber(L, ind);
+				lua_pushlightuserdata(L, Ent);
+				lua_settable(L, -3);
+				ind++;
+			}
+		}
+		lua_pushnumber(L, ind);
+	}
+	return 2;
 }
 int SOBaseScript::l_get_ent_type(lua_State* L) {
 	lua_pushnumber(L, ((SOEnt*)lua_touserdata(L, 1))->ent_type);
@@ -476,5 +535,16 @@ int SOBaseScript::l_setframe(lua_State* L) {
 	entp->E.stdim(entp->frames[i][2], entp->frames[i][3]);
 	entp->E.suvpos(entp->frames[i][4], entp->frames[i][5]);
 	entp->E.suvdim(entp->frames[i][6], entp->frames[i][7]);
+	return 0;
+}
+int SOBaseScript::l_settext(lua_State* L) {
+	SOText* entp = ((SOText*)lua_touserdata(L, 1));
+	std::string str = lua_tostring(L, 2);
+	if (entp->ent_type != ET_TEXT) {
+		std::cout << "l_settext: ERROR: entity is not text" << std::endl;
+		return 0;
+	}
+	std::cout << "l_settext: entp is " << entp << std::endl;
+	entp->b_set(str.size(), str.c_str());
 	return 0;
 }

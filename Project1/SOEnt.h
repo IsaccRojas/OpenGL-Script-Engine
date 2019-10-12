@@ -37,6 +37,16 @@ public:
 	virtual void dispatch(SOText& sotext);
 };
 
+struct EntData {
+	EntData();
+	EntData(std::string ent_name, Packet packet, std::vector<DataTag> datatags, EntType ent_type, std::vector<std::vector<float>> ent_frames);
+	std::string name;
+	Packet P;
+	std::vector<DataTag> dt;
+	EntType type;
+	std::vector<std::vector<float>> frames;
+};
+
 /*
 INDEX 0 - kill
 */

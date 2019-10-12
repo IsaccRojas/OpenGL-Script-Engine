@@ -8,6 +8,7 @@
 
 SOText::SOText(EntData EData, SOBaseScript* master_ptr) : SOEnt(EData, master_ptr) {
 	E = new Entity(EData.P, master_ptr->getTexture(EData.type), 0);
+	char_data.clear();
 }
 
 void SOText::base_script() {
@@ -31,10 +32,14 @@ void SOText::set(std::string str) {
 
 void SOText::b_set(int n, std::string str) {
 	buffer_size = n;
+
+	std::cout << "Deallocating..." << std::endl;
 	while (char_data.size() > 0) {
 		master->EBuffDealloc(char_data.back());
 		char_data.pop_back();
 	}
+	std::cout << "Done." << std::endl;
+	std::cout << "Allocating..." << std::endl;
 	for (int m = 0; m < n; m++)
 		char_data.push_back(
 			master->EBuffAlloc(
@@ -43,6 +48,7 @@ void SOText::b_set(int n, std::string str) {
 				0
 			)
 		);
+	std::cout << "Done. End." << std::endl;
 }
 
 std::string SOText::get() {

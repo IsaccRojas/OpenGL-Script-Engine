@@ -18,8 +18,8 @@ function Fume_init ()
 	_E = { x=0, y=0, w=16, h=16, tox=-8, toy=8, tw=16, th=16, u=0, v=0, uvw=16, uvh=16 }
 	_D = { "kill", "0", "spd", "1", "frame", "0", "bul_spd", "3", "shoot_cooldown", "0", "shoot_cooldown_max", "90",
 		--   0            1            2              3                  4                          5
-		"frame_max", "29"
-		--  6
+		"frame_max", "29", "health", "10", "hurt_cooldown", "0", "hurt_cooldown_max", "4"
+		--  6				  7					  8						9
 	}
 
 	_T = 2
@@ -27,6 +27,34 @@ end
 
 function Fume ()
 	Fume_anim()
+
+	Bullets, size = get_ent_all_tn(master, 4, "BasicShot")
+	if (size > 0) then
+		pos = getpos(this)
+		i = 0
+		hits = 0
+		while (i < size) do
+			bullet_pos = getpos(Bullets[i])
+			if (dist(pos.x, pos.y, bullet_pos.x, bullet_pos.y) <= 14) then
+				setdatai(Bullets[i], 5, 1)
+				hits = hits + getdatai(Bullets[i], 6)
+			end
+			i = i + 1
+		end
+		if (hits > 0) then
+			setdatai(this, 7, getdatai(this, 7) - hits)
+			setdatai(this, 8, getdatai(this, 9))
+		end
+	end
+	if (getdatai(this, 7) <= 0) then
+		setdatai(this, 0, 2)
+		Ef = gen_ent(master, "BasicShotExplode")
+		setpos(Ef, getpos(this).x, getpos(this).y)
+		setuv(Ef, getuv(Ef).u, 16)
+	end
+	if (getdatai(this, 8) > 0) then
+		setdatai(this, 8, getdatai(this, 8) - 1)
+	end
 
 	mepos = getpos(this)
 	ppos = getpos(player)

@@ -15,6 +15,8 @@ INDEX 0: PLAYER
 */
 
 class SOBaseScript : public ScriptObj {
+	std::vector<boost::dll::shared_library> libs;
+
 	std::chrono::steady_clock::time_point oldt;
 	std::chrono::steady_clock::time_point newt;
 	SOEntDataBase DB;
@@ -54,6 +56,8 @@ public:
 	static int l_get_kill(lua_State* L);
 	static int l_get_master(lua_State* L); /* FIXME: incomplete */
 	static int l_get_ent(lua_State* L);
+	static int l_get_ent_all_t(lua_State* L); //TODO
+	static int l_get_ent_all_tn(lua_State* L);
 	static int l_get_ent_type(lua_State* L);
 	static int l_get_entcount(lua_State* L);
 	static int l_get_input(lua_State* L);
@@ -76,6 +80,7 @@ public:
 	static int l_setdatas(lua_State* L);
 	static int l_setdatai(lua_State* L);
 	static int l_setframe(lua_State* L);
+	static int l_settext(lua_State* L);
 };
 
 #endif

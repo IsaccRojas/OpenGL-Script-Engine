@@ -12,6 +12,8 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include <boost/dll/config.hpp>
+#include <boost/dll.hpp>
 
 class ScriptObj {
 public:

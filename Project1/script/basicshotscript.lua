@@ -12,6 +12,9 @@ function BasicShot ()
 	pos = getpos(this)
 	setpos(this, pos.x + getdatai(this, 3), pos.y + getdatai(this, 4))
 	if ((getdatai(this, 1) == 75) or getdatai(this, 5) > 0) then
+		Ef = gen_ent(master, "BasicShotExplode")
+		mepos = getpos(this)
+		setpos(Ef, mepos.x, mepos.y)
 		setdatai(this, 0, 2)
 	end
 	setdatai(this, 1, getdatai(this, 1) + 1)
