@@ -141,7 +141,7 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	};
-	set_map(map2);
+	//set_map(map2);
 
 	TBuff->update();
 	TVertBuf->update();   
@@ -166,16 +166,16 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 
 	srand(unsigned(time(NULL))); // ex: rand() % 10 + 1 is a number in the range [1, 10]
 
-	lua_pushlightuserdata(L, (void*)this);
-	lua_setglobal(L, "master");
-	lua_pushlightuserdata(L, (void*)(entities.at(0)));
-	lua_setglobal(L, "player");
+	//lua_pushlightuserdata(L, (void*)this);
+	//lua_setglobal(L, "master");
+	//lua_pushlightuserdata(L, (void*)(entities.at(0)));
+	//lua_setglobal(L, "player");
 	//lua_pushnumber(L, this->res->getWindowDims().x);
-	lua_pushnumber(L, this->res->getRenderWidth());
-	lua_setglobal(L, "WIN_WIDTH");
+	//lua_pushnumber(L, this->res->getRenderWidth());
+	//lua_setglobal(L, "WIN_WIDTH");
 	//lua_pushnumber(L, this->res->getWindowDims().y);
-	lua_pushnumber(L, this->res->getRenderWidth());
-	lua_setglobal(L, "WIN_HEIGHT");
+	//lua_pushnumber(L, this->res->getRenderWidth());
+	//lua_setglobal(L, "WIN_HEIGHT");
 
 	//gen_ent("Smoker");
 
@@ -210,20 +210,20 @@ void SOBaseScript::base_script() {
 	cursory = int(-1 * (cursory - (res->getRenderWidth() / 2)));
 	//if (oldcursx != cursorx || oldcursy != cursory)
 	//	std::cout << "x " << cursorx << " y " << cursory << std::endl;
-	lua_pushnumber(L, cursorx);
-	lua_setglobal(L, "CURSOR_X");
-	lua_pushnumber(L, cursory);
-	lua_setglobal(L, "CURSOR_Y");
-	if (click & SDL_BUTTON(SDL_BUTTON_LEFT))
-		lua_pushnumber(L, 1);
-	else
-		lua_pushnumber(L, 0);
-	lua_setglobal(L, "MOUSE_LEFT");
-	if (click & SDL_BUTTON(SDL_BUTTON_RIGHT))
-		lua_pushnumber(L, 1);
-	else
-		lua_pushnumber(L, 0);
-	lua_setglobal(L, "MOUSE_RIGHT");
+	//lua_pushnumber(L, cursorx);
+	//lua_setglobal(L, "CURSOR_X");
+	//lua_pushnumber(L, cursory);
+	//lua_setglobal(L, "CURSOR_Y");
+	//if (click & SDL_BUTTON(SDL_BUTTON_LEFT))
+	//	lua_pushnumber(L, 1);
+	//else
+	//	lua_pushnumber(L, 0);
+	//lua_setglobal(L, "MOUSE_LEFT");
+	//if (click & SDL_BUTTON(SDL_BUTTON_RIGHT))
+	//	lua_pushnumber(L, 1);
+	//else
+	//	lua_pushnumber(L, 0);
+	//lua_setglobal(L, "MOUSE_RIGHT");
 
 	if (frame % 105 == 0) {
 		int x = int(bool(rand() % 2));

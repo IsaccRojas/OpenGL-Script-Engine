@@ -30,10 +30,10 @@ SOEnt::SOEnt(EntData EData, SOBaseScript* master_ptr) {
 }
 
 void SOEnt::base_script() {
-	lua_pushlightuserdata(master->L, (void*)this);
-	lua_setglobal(master->L, "this");
-	lua_getglobal(master->L, name.c_str());
-	lua_pcall(master->L, 0, 0, 0);
+	//lua_pushlightuserdata(master->L, (void*)this);
+	//lua_setglobal(master->L, "this");
+	//lua_getglobal(master->L, name.c_str());
+	//lua_pcall(master->L, 0, 0, 0);
 }
 
 void SOEnt::run(Abstr_Dispatcher &dispatcher) {
