@@ -164,6 +164,9 @@
     <Text Include="frag_shader_source.txt" />
     <Text Include="vert_shader_source.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SOEntDataBase.tpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

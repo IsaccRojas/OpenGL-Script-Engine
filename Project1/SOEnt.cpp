@@ -19,14 +19,17 @@ void Dispatcher::dispatch(SOText& sotext) {
 	sotext.base_script();
 }
 
-SOEnt::SOEnt(EntData EData, SOBaseScript* master_ptr) {
-	if (EData.type != ET_TEXT)
-		E = master_ptr->EBuffAlloc(EData.P, master_ptr->getTexture(EData.type), 0);
+SOEnt::SOEnt(Entity *ent_ptr, SOBaseScript* master_ptr) {
+	//if (EData.type != ET_TEXT)
+		//E = master_ptr->EBuffAlloc(EData.P, master_ptr->getTexture(EData.type), 0);
 	master = master_ptr;
-	data = EData.dt;
-	name = EData.name;
-	ent_type = EData.type;
-	frames = EData.frames;
+	E = ent_ptr;
+	//data = EData.dt;
+	//name = EData.name;
+	//ent_type = EData.type;
+	//frames = EData.frames;
+	kill = 0;
+	std::cout << "/t/tin SOEnt constructor" << std::endl;
 }
 
 void SOEnt::base_script() {
@@ -38,4 +41,24 @@ void SOEnt::base_script() {
 
 void SOEnt::run(Abstr_Dispatcher &dispatcher) {
 	dispatcher.dispatch(*this);
+}
+
+void SOEnt::setEnt(Entity *ent_ptr) {
+	E = ent_ptr;
+}
+
+EntPointer SOEnt::getEntPointer() {
+	return E;
+}
+
+int SOEnt::getIndex() {
+	return index;
+}
+
+void SOEnt::setIndex(int i) {
+	index = i;
+}
+
+int SOEnt::getData() {
+	return kill;
 }

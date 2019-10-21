@@ -101,6 +101,38 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	*/
 	//DB.load_ent_data(L, "objInit");
 
+	//SOEntDataBase DB;
+	//DB.load("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll");
+	//SOEnt* E_test = DB.exec_func("gen_SOEnt_Test", nullptr, nullptr);
+	//if (E_test == nullptr)
+	//	std::cout << "ERROR: could not execute function." << std::endl;
+	//else
+	//	std::cout << "Function executed successfully." << std::endl;
+	//E_test->base_script();
+
+	//auto f = DB.get_func<SOEnt*(*)(Entity*, SOBaseScript*), SOEnt*(Entity*, SOBaseScript*)>("gen_SOEnt_Test");
+	//void *(*dl_newChildAObj)();
+	
+	
+	std::cout << "getting lib" << std::endl;
+	boost::dll::shared_library lib("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll");
+	std::cout << "lib obtained" << std::endl;
+	SOEnt* E_test = nullptr;
+	try {
+		if (lib.has("gen_SOEnt_Test")) {
+			std::cout << "func found" << std::endl;
+			auto f = lib.get<SOEnt*(Entity*, SOBaseScript*)>("gen_SOEnt_Test");
+			std::cout << "func gotten" << std::endl;
+			E_test = f(nullptr, nullptr);
+			std::cout << "func executed" << std::endl;
+		}
+		else
+			std::cout << "function not found" << std::endl;
+	}
+	catch (...) {
+		std::cout << "an exception was thrown" << std::endl;
+	}
+
 	TBuff = new EBuffer();
 	TVertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(TBuff->vData), GL_DYNAMIC_DRAW);
 	TElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(TBuff->vElements), GL_DYNAMIC_DRAW);
@@ -208,6 +240,7 @@ void SOBaseScript::base_script() {
 	cursory = int(cursory * (res->getRenderWidth() / res->getWindowDims().y));
 	cursorx = int(cursorx - (res->getRenderWidth() / 2));
 	cursory = int(-1 * (cursory - (res->getRenderWidth() / 2)));
+
 	//if (oldcursx != cursorx || oldcursy != cursory)
 	//	std::cout << "x " << cursorx << " y " << cursory << std::endl;
 	//lua_pushnumber(L, cursorx);
@@ -241,7 +274,7 @@ void SOBaseScript::base_script() {
 
 	for (unsigned n = 0; n < entities.size(); n++) {
 		entities.at(n)->run(dispatcher);
-		if (entities.at(n)->data[0].n == 2)
+		if (entities.at(n)->getData() == 2)
 			killed_entities.push_back(entities.at(n));
 	}
 	for (unsigned n = 0; n < killed_entities.size(); n++)
@@ -271,17 +304,18 @@ int SOBaseScript::EBuffDealloc(Entity* Ent) {
 }
 
 SOEnt* SOBaseScript::gen_ent(std::string name) {
+	
 	//entities.push_back(new SOEnt(DB.get(name.c_str()), this));
-	entities.back()->index = entities.size() - 1;
+	entities.back()->setIndex(entities.size() - 1);
 	return entities.back();
 }
 
 void SOBaseScript::del_ent(SOEnt* soentity) {
-	int ind = soentity->index;
-	EBuff->erase(soentity->E.gent());
+	int ind = soentity->getIndex();
+	EBuff->erase(soentity->getEntPointer().gent());
 	entities.erase(entities.begin() + ind);
 	for (unsigned n = ind; n < entities.size(); n++)
-		(entities.at(n)->index)--;
+		entities.at(n)->setIndex(entities.at(n)->getIndex() - 1);
 }
 
 Image SOBaseScript::getTexture(int index) {
@@ -295,6 +329,7 @@ float SOBaseScript::get_fps() {
 	return fabs(1000.0f / float(time));
 }
 
+/*
 void SOBaseScript::set_map(float* tilepos) {
 
 	for (int n = 0; n < 16; n++) {
@@ -312,11 +347,13 @@ void SOBaseScript::set_map(float* tilepos) {
 		}
 	}
 }
+*/
 
 Resources SOBaseScript::getResources() {
 	return *res;
 }
 
+/*
 int SOBaseScript::l_gen_ent(lua_State* L) {
 	lua_pushlightuserdata(L, ((SOBaseScript*)lua_touserdata(L, 1))->gen_ent(lua_tostring(L, 2)));
 	return 1;
@@ -548,3 +585,4 @@ int SOBaseScript::l_settext(lua_State* L) {
 	entp->b_set(str.size(), str.c_str());
 	return 0;
 }
+*/

@@ -15,7 +15,7 @@ INDEX 4 - shoot_cooldown_max
 
 class SOPlayer : public SOEnt {
 public:
-	SOPlayer(EntData EData, SOBaseScript* master_ptr);
+	SOPlayer(Entity *ent_ptr = nullptr, SOBaseScript *master_ptr = nullptr);
 	void base_script() override;
 	void run(Abstr_Dispatcher &dispatcher) override;
 };

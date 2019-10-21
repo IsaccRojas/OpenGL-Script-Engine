@@ -6,16 +6,20 @@
 1 - spacing
 */
 
-SOText::SOText(EntData EData, SOBaseScript* master_ptr) : SOEnt(EData, master_ptr) {
+SOText::SOText(Entity *ent_ptr, SOBaseScript* master_ptr) : SOEnt(ent_ptr, master_ptr) {
+	/*
 	E = new Entity(EData.P, master_ptr->getTexture(EData.type), 0);
 	char_data.clear();
+	*/
 }
 
 void SOText::base_script() {
+	/*
 	lua_pushlightuserdata(master->L, (void*)this);
 	lua_setglobal(master->L, "this");
 	lua_getglobal(master->L, name.c_str());
 	lua_pcall(master->L, 0, 0, 0);
+	*/
 }
 
 void SOText::run(Abstr_Dispatcher &dispatcher) {
@@ -27,10 +31,13 @@ void SOText::alloc_chars(int n) {
 }
 
 void SOText::set(std::string str) {
+	/*
 	text = str;
+	*/
 }
 
 void SOText::b_set(int n, std::string str) {
+	/*
 	buffer_size = n;
 
 	std::cout << "Deallocating..." << std::endl;
@@ -49,8 +56,12 @@ void SOText::b_set(int n, std::string str) {
 			)
 		);
 	std::cout << "Done. End." << std::endl;
+	*/
 }
 
 std::string SOText::get() {
+	/*
 	return text;
+	*/
+	return std::string();
 }

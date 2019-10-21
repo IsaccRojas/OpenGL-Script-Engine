@@ -16,7 +16,7 @@ class SOText : public SOEnt {
 	std::string text;
 	float t_spacing, t_au, t_av, t_uvw, t_uvh;
 public:
-	SOText(EntData EData, SOBaseScript* master_ptr);
+	SOText(Entity *ent_ptr = nullptr, SOBaseScript *master_ptr = nullptr);
 	void base_script() override;
 	void run(Abstr_Dispatcher &dispatcher) override;
 

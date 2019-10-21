@@ -15,10 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="source1.cpp">
+    <ClCompile Include="SOEnt_Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source2.cpp">
+    <ClCompile Include="..\Project1\SOEnt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Project1\EBuffer\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Project1\tools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

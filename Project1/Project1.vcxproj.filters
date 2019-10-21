@@ -104,4 +104,9 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SOEntDataBase.tpp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

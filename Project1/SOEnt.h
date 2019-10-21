@@ -3,7 +3,10 @@
 #ifndef SOENT_H_
 #define SOENT_H_
 
-#include "ScriptObj.h"
+//#include "ScriptObj.h"
+#include "EBuffer/Entity.h"
+#include <boost/dll/config.hpp>
+#include <boost/dll.hpp>
 
 struct EntData;
 
@@ -51,19 +54,26 @@ struct EntData {
 INDEX 0 - kill
 */
 
-class SOEnt : public ScriptObj {
+class SOEnt {
 protected:
 	SOBaseScript* master;
-public:
-	std::vector<DataTag> data;
-	std::string name;
+	//EntData ED;
 	EntPointer E;
-	EntType ent_type;
-	std::vector<std::vector<float>> frames;
 	int index;
-	SOEnt(EntData EData, SOBaseScript* master_ptr);
-	virtual void base_script() override;
+	int kill;
+public:
+	SOEnt(Entity *ent_ptr = nullptr, SOBaseScript *master_ptr = nullptr);
+	virtual void base_script();
 	virtual void run(Abstr_Dispatcher &dispatcher);
+	void setEnt(Entity *ent_ptr);
+
+	int getIndex();
+	void setIndex(int i);
+
+	EntPointer getEntPointer();
+
+	//TODO: currently hardcoded to return kill variable
+	int getData();
 };
 
 #endif
