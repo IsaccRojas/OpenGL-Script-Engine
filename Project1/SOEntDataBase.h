@@ -5,6 +5,8 @@
 
 #include "SOEnt.h"
 
+#include <boost/function.hpp>
+
 #include <experimental/filesystem>
 #include <iostream>
 
@@ -29,7 +31,7 @@ public:
 
 	//get pointer to function 'func'
 	template<typename T>
-	T *get_func(std::string func);
+	int get_func(std::string func_name, boost::function<T> *func);
 };
 
 #include "SOEntDataBase.tpp"

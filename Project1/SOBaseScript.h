@@ -15,25 +15,27 @@ INDEX 0: PLAYER
 */
 
 class SOBaseScript : public ScriptObj {
-	std::vector<boost::dll::shared_library> libs;
-
 	std::chrono::steady_clock::time_point oldt;
 	std::chrono::steady_clock::time_point newt;
+
 	SOEntDataBase DB;
+
 	EBuffer* TBuff;
 	GLBuffer<float>* TVertBuf;
 	GLBuffer<unsigned>* TElBuf;
 	EBuffer* EBuff;
 	GLBuffer<float>* VertBuf;
 	GLBuffer<unsigned>* ElBuf;
+
 	Resources* res;
 	Image textures[16];
+
 	Dispatcher dispatcher;
 	std::vector<SOEnt*> killed_entities;
 	int frame, cursorx, cursory;
 public:
 	int F;
-	SOBaseScript(Resources* resources);
+	SOBaseScript(Resources* resources, int *err);
 
 	Resources getResources();
 	std::vector<SOEnt*> entities;

@@ -74,13 +74,10 @@ return 0;
 */
 
 SOEnt* SOEntDataBase::exec_func(std::string func, Entity* ent_ptr, SOBaseScript* basescript_ptr) {
-	for (int i = 0; i < libs.size(); i++) {
+	for (unsigned i = 0; i < libs.size(); i++) {
 		if (libs.at(i).has(func)) {
-			std::cout << "found func" << std::endl;
 			auto f = libs.at(i).get<SOEnt*(Entity*,SOBaseScript*)>(func);
-			std::cout << "executing func(...)" << std::endl;
 			auto r = f(ent_ptr, basescript_ptr);
-			std::cout << "returning" << std::endl;
 			return r;
 		}
 	}

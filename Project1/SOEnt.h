@@ -65,6 +65,8 @@ public:
 	SOEnt(Entity *ent_ptr = nullptr, SOBaseScript *master_ptr = nullptr);
 	virtual void base_script();
 	virtual void run(Abstr_Dispatcher &dispatcher);
+	virtual Packet getPacket();
+
 	void setEnt(Entity *ent_ptr);
 
 	int getIndex();

@@ -178,6 +178,14 @@ void Entity::dataSetUVDimensions(float uvw, float uvh) {
 	vVertices.at(18) = (V / tex.img_height) + (UVH / tex.img_height);
 	this->bChangeSinceLastCheck = 1;
 }
+void Entity::dataSetPacket(Packet p) {
+	dataSetPos(p.x, p.y);
+	dataSetDimensions(p.w, p.h);
+	dataSetTexOffset(p.tox, p.toy);
+	dataSetTexDimensions(p.tw, p.th);
+	dataSetUV(p.u, p.v);
+	dataSetUVDimensions(p.uvw, p.uvh);
+}
 void Entity::dataReset() {
 	/*
 	(x + tox),
@@ -286,6 +294,7 @@ void EntPointer::suvpos(float u, float v) { if (ent != NULL) ent->dataSetUV(u, v
 vec2 EntPointer::guvdim() { return vec2(ent->dataGetUVDimensions().x, ent->dataGetUVDimensions().y); }
 void EntPointer::suvdim(float uvw, float uvh) { if (ent != NULL) ent->dataSetUVDimensions(uvw, uvh); }
 Packet EntPointer::gpack() { return ent->dataPacket(); }
+void EntPointer::spack(Packet p) { if (ent != NULL) ent->dataSetPacket(p); }
 int EntPointer::gtu() { return ent->dataGetTexUnit(); }
 int EntPointer::gprior() { return ent->getPriority(); }
 void EntPointer::sprior(int p) { if (ent != NULL) ent->setPriority(p); }

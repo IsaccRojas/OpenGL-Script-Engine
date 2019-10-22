@@ -57,6 +57,7 @@ public:
 	void dataSetTexDimensions(float tw, float th);
 	void dataSetUV(float u, float v);
 	void dataSetUVDimensions(float uvw, float uvh);
+	void dataSetPacket(Packet p);
 	void dataReset();
 	void dataFree();
 	Packet dataPacket();
@@ -96,6 +97,7 @@ public:
 	vec2 guvdim();
 	void suvdim(float uvw, float uvh);
 	Packet gpack();
+	void spack(Packet p);
 	int gtu();
 	int gprior();
 	void sprior(int p);

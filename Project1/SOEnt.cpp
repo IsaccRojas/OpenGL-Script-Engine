@@ -29,7 +29,6 @@ SOEnt::SOEnt(Entity *ent_ptr, SOBaseScript* master_ptr) {
 	//ent_type = EData.type;
 	//frames = EData.frames;
 	kill = 0;
-	std::cout << "/t/tin SOEnt constructor" << std::endl;
 }
 
 void SOEnt::base_script() {
@@ -41,6 +40,10 @@ void SOEnt::base_script() {
 
 void SOEnt::run(Abstr_Dispatcher &dispatcher) {
 	dispatcher.dispatch(*this);
+}
+
+Packet SOEnt::getPacket() {
+	return Packet();
 }
 
 void SOEnt::setEnt(Entity *ent_ptr) {

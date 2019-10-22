@@ -1,6 +1,6 @@
 #include "SOBaseScript.h"
 
-SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
+SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 	//store each texture's data and information in array
 	textures[ET_PLAYER] = MakeTextureImage(GL_TEXTURE_2D, "img/playernoeyes.png", 1, 1);
 	textures[ET_NPC] = MakeTextureImage(GL_TEXTURE_2D, "img/npcs.png", 1, 2);
@@ -8,172 +8,15 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	textures[ET_PROJECTILE] = MakeTextureImage(GL_TEXTURE_2D, "img/projectiles.png", 1, 4);
 	textures[ET_EFFECT] = MakeTextureImage(GL_TEXTURE_2D, "img/effects.png", 1, 5);
 	textures[ET_TEXT] = MakeTextureImage(GL_TEXTURE_2D, "img/text.png", 1, 6);
-
 	
-	/*
-	L = luaL_newstate();
-	luaL_openlibs(L);
-
-	//push C functions to lua
-	lua_pushcfunction(L, SOBaseScript::l_gen_ent);
-	lua_setglobal(L, "gen_ent");
-	lua_pushcfunction(L, SOBaseScript::l_set_kill);
-	lua_setglobal(L, "set_kill");
-	lua_pushcfunction(L, SOBaseScript::l_get_kill);
-	lua_setglobal(L, "get_kill");
-	lua_pushcfunction(L, SOBaseScript::l_get_master);
-	lua_setglobal(L, "get_master");
-	lua_pushcfunction(L, SOBaseScript::l_get_ent);
-	lua_setglobal(L, "get_ent");
-	lua_pushcfunction(L, SOBaseScript::l_get_ent_all_t);
-	lua_setglobal(L, "get_ent_all_t");
-	lua_pushcfunction(L, SOBaseScript::l_get_ent_all_tn);
-	lua_setglobal(L, "get_ent_all_tn");
-	lua_pushcfunction(L, SOBaseScript::l_get_ent_type);
-	lua_setglobal(L, "get_ent_type");
-	lua_pushcfunction(L, SOBaseScript::l_get_entcount);
-	lua_setglobal(L, "get_entcount");
-	lua_pushcfunction(L, SOBaseScript::l_get_input);
-	lua_setglobal(L, "get_input");
-
-	//entity-specific "get" C functions
-	lua_pushcfunction(L, SOBaseScript::l_getpos);
-	lua_setglobal(L, "getpos");
-	lua_pushcfunction(L, SOBaseScript::l_getdim);
-	lua_setglobal(L, "getdim");
-	lua_pushcfunction(L, SOBaseScript::l_gettoff);
-	lua_setglobal(L, "gettoff");
-	lua_pushcfunction(L, SOBaseScript::l_gettdim);
-	lua_setglobal(L, "gettdim");
-	lua_pushcfunction(L, SOBaseScript::l_getuv);
-	lua_setglobal(L, "getuv");
-	lua_pushcfunction(L, SOBaseScript::l_getuvdim);
-	lua_setglobal(L, "getuvdim");
-	lua_pushcfunction(L, SOBaseScript::l_getdatas);
-	lua_setglobal(L, "getdatas");
-	lua_pushcfunction(L, SOBaseScript::l_getdatai);
-	lua_setglobal(L, "getdatai");
-
-	//entity-specific "set" C functions
-	lua_pushcfunction(L, SOBaseScript::l_setpos);
-	lua_setglobal(L, "setpos");
-	lua_pushcfunction(L, SOBaseScript::l_setdim);
-	lua_setglobal(L, "setdim");
-	lua_pushcfunction(L, SOBaseScript::l_settoff);
-	lua_setglobal(L, "settoff");
-	lua_pushcfunction(L, SOBaseScript::l_settdim);
-	lua_setglobal(L, "settdim");
-	lua_pushcfunction(L, SOBaseScript::l_setuv);
-	lua_setglobal(L, "setuv");
-	lua_pushcfunction(L, SOBaseScript::l_setuvdim);
-	lua_setglobal(L, "setuvdim");
-	lua_pushcfunction(L, SOBaseScript::l_setdatas);
-	lua_setglobal(L, "setdatas");
-	lua_pushcfunction(L, SOBaseScript::l_setdatai);
-	lua_setglobal(L, "setdatai");
-	lua_pushcfunction(L, SOBaseScript::l_setframe);
-	lua_setglobal(L, "setframe");
-	lua_pushcfunction(L, SOBaseScript::l_settext);
-	lua_setglobal(L, "settext");
-	*/
-	//define lua state
-	
-
-	//find and load all scripts in directory ../scripts
-	//std::cout << DB.load_all(L, "script") << " error(s) loading scripts." << std::endl;
-	//std::cout << DB.load_all("script") << "error(s) loading scripts." << std::endl;
-	//TODO: change to allow loading from names stored after executing DB.load_all()
-	/*
-	DB.load_ent_data(L, {
-		"MPlayer",
-		"Fume",
-		"Smoker",
-		"Wizard",
-		"Tile0",
-		"Tile1",
-		"BasicShot",
-		"BasicShotPuff",
-		"BasicShotExplode",
-		"Text",
-		"DamageText",
-		"SmokerPuff"
-		});
-	*/
-	//DB.load_ent_data(L, "objInit");
-
-	//SOEntDataBase DB;
-	//DB.load("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll");
-	//SOEnt* E_test = DB.exec_func("gen_SOEnt_Test", nullptr, nullptr);
-	//if (E_test == nullptr)
-	//	std::cout << "ERROR: could not execute function." << std::endl;
-	//else
-	//	std::cout << "Function executed successfully." << std::endl;
-	//E_test->base_script();
-
-	//auto f = DB.get_func<SOEnt*(*)(Entity*, SOBaseScript*), SOEnt*(Entity*, SOBaseScript*)>("gen_SOEnt_Test");
-	//void *(*dl_newChildAObj)();
-	
-	
-	std::cout << "getting lib" << std::endl;
-	boost::dll::shared_library lib("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll");
-	std::cout << "lib obtained" << std::endl;
-	SOEnt* E_test = nullptr;
-	try {
-		if (lib.has("gen_SOEnt_Test")) {
-			std::cout << "func found" << std::endl;
-			auto f = lib.get<SOEnt*(Entity*, SOBaseScript*)>("gen_SOEnt_Test");
-			std::cout << "func gotten" << std::endl;
-			E_test = f(nullptr, nullptr);
-			std::cout << "func executed" << std::endl;
-		}
-		else
-			std::cout << "function not found" << std::endl;
-	}
-	catch (...) {
-		std::cout << "an exception was thrown" << std::endl;
+	if (DB.load("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll") != 0) {
+		std::cout << "ERROR: could not load lib" << std::endl;
+		*err = -1;
 	}
 
 	TBuff = new EBuffer();
 	TVertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(TBuff->vData), GL_DYNAMIC_DRAW);
 	TElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(TBuff->vElements), GL_DYNAMIC_DRAW);
-
-	float map[] = {
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-	};
-	float map2[] = {
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
-		0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-	};
-	//set_map(map2);
 
 	TBuff->update();
 	TVertBuf->update();   
@@ -182,34 +25,11 @@ SOBaseScript::SOBaseScript(Resources* resources) : res(resources) {
 	EBuff = new EBuffer();
 	VertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(EBuff->vData), GL_DYNAMIC_DRAW);
 	ElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(EBuff->vElements), GL_DYNAMIC_DRAW);
-
-	/*
-	entities.push_back(new SOPlayer(DB.get("MPlayer"), this));
-	entities.at(0)->index = 0;
-	entities.push_back(new SOText(DB.get("Text"), this));
-	entities.at(1)->index = 1;
-	entities.push_back(new SOEnt(DB.get("Smoker"), this));
-	entities.at(2)->index = 2;
-	std::string str = "This flavored 'water' is great! (ir51@aol.com)";
-	str = "Fuck off, b-baka chan!";
-	dynamic_cast<SOText*>(entities.at(1))->b_set(str.size(), str.c_str());
-	*/
 	
-
 	srand(unsigned(time(NULL))); // ex: rand() % 10 + 1 is a number in the range [1, 10]
 
-	//lua_pushlightuserdata(L, (void*)this);
-	//lua_setglobal(L, "master");
-	//lua_pushlightuserdata(L, (void*)(entities.at(0)));
-	//lua_setglobal(L, "player");
-	//lua_pushnumber(L, this->res->getWindowDims().x);
-	//lua_pushnumber(L, this->res->getRenderWidth());
-	//lua_setglobal(L, "WIN_WIDTH");
-	//lua_pushnumber(L, this->res->getWindowDims().y);
-	//lua_pushnumber(L, this->res->getRenderWidth());
-	//lua_setglobal(L, "WIN_HEIGHT");
-
-	//gen_ent("Smoker");
+	if (*err == 0)
+		gen_ent("SOEnt_Test");
 
 	frame = 0;
 	cursorx = 0;
@@ -304,8 +124,13 @@ int SOBaseScript::EBuffDealloc(Entity* Ent) {
 }
 
 SOEnt* SOBaseScript::gen_ent(std::string name) {
-	
-	//entities.push_back(new SOEnt(DB.get(name.c_str()), this));
+	boost::function<SOEnt*(Entity*, SOBaseScript*)> dl_genf;
+	if (DB.get_func<SOEnt*(Entity*, SOBaseScript*)>(std::string("gen_") + name, &dl_genf) != 0) {
+		std::cout << "ERROR: could not get entity gen function" << std::endl;
+		return nullptr;
+	}
+	SOEnt* E = dl_genf(this->EBuffAlloc(Packet{}, textures[1], 0), this);
+	entities.push_back(E);
 	entities.back()->setIndex(entities.size() - 1);
 	return entities.back();
 }

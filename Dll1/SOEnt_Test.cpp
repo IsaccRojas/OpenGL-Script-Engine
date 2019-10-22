@@ -8,14 +8,25 @@ public:
 	SOEnt_Test(Entity *ent_ptr, SOBaseScript *master_ptr);
 	void base_script() override;
 	void run(Abstr_Dispatcher &dispatcher) override;
+	float r;
+	float f;
+	float s;
+	vec2 center;
 };
 
 SOEnt_Test::SOEnt_Test(Entity *ent_ptr, SOBaseScript *master_ptr) : SOEnt(ent_ptr, master_ptr) {
-	std::cout << "/t/tin SOEnt_Test constructor" << std::endl;
+	//x=0, y=0, w=13, h=13, tox=-8, toy=8, tw=16, th=16, u=0, v=0, uvw=16, uvh=16
+	E.spack(Packet{ 0, 0, 13, 13, -8, 8, 16, 16, 0, 0, 16, 16 });
+	r = 16.0f;
+	f = 0.0f;
+	s = 0.07f;
+	center.x = 0.0f;
+	center.y = 0.0f;
 }
 
 void SOEnt_Test::base_script() {
-	std::cout << "test output" << std::endl;
+	E.spos(center.x + (r * cos(f * s)), center.y + (r * sin(f * s)));
+	f++;
 }
 
 void SOEnt_Test::run(Abstr_Dispatcher &dispatcher) {
@@ -23,6 +34,5 @@ void SOEnt_Test::run(Abstr_Dispatcher &dispatcher) {
 }
 
 SOEnt *gen_SOEnt_Test(Entity *ent_ptr, SOBaseScript* master_ptr) {
-	std::cout << "/tallocating and returning SOEnt_Test(...)" << std::endl;
 	return new SOEnt_Test(ent_ptr, master_ptr);
 }
