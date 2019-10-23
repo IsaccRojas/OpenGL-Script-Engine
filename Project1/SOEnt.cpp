@@ -34,26 +34,24 @@ void SOEnt::run(Abstr_Dispatcher &dispatcher) {
 	dispatcher.dispatch(*this);
 }
 
-Packet SOEnt::getPacket() {
-	return Packet();
-}
-
-void SOEnt::setEnt(Entity *ent_ptr) {
-	E = ent_ptr;
-}
-
 EntPointer SOEnt::getEntPointer() {
 	return E;
+}
+void SOEnt::setEnt(Entity *ent_ptr) {
+	E = ent_ptr;
 }
 
 int SOEnt::getIndex() {
 	return index;
 }
-
 void SOEnt::setIndex(int i) {
 	index = i;
 }
 
-int SOEnt::getData() {
-	return kill;
+EntPage SOEnt::getPage() {
+	return EntPage(E.gpack(), DT);
+}
+void SOEnt::commitPage(EntPage pg) {
+	E.spack(pg.P);
+	DT = pg.DT;
 }

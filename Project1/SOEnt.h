@@ -52,25 +52,22 @@ INDEX 0 - kill
 class SOEnt {
 protected:
 	SOBaseScript* master;
-	//EntData ED;
 	EntPointer E;
+	std::vector<DataTag> DT;
 	int index;
-	int kill;
 public:
 	SOEnt(Entity *ent_ptr = nullptr, SOBaseScript *master_ptr = nullptr);
 	virtual void base_script();
 	virtual void run(Abstr_Dispatcher &dispatcher);
-	virtual Packet getPacket();
 
+	EntPointer getEntPointer();
 	void setEnt(Entity *ent_ptr);
-
+	
 	int getIndex();
 	void setIndex(int i);
 
-	EntPointer getEntPointer();
-
-	//TODO: currently hardcoded to return kill variable
-	int getData();
+	EntPage getPage();
+	void commitPage(EntPage pg);
 };
 
 #endif
