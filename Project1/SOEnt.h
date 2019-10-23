@@ -8,7 +8,8 @@
 #include <boost/dll/config.hpp>
 #include <boost/dll.hpp>
 
-struct EntData;
+enum EntType_enum { ET_ENT, ET_PLAYER, ET_NPC, ET_TILE, ET_PROJECTILE, ET_EFFECT, ET_TEXT };
+typedef enum EntType_enum EntType;
 
 struct DataTag {
 	DataTag();
@@ -17,13 +18,17 @@ struct DataTag {
 	float n;
 };
 
+struct EntPage {
+	EntPage();
+	EntPage(Packet p, std::vector<DataTag> dt);
+	Packet P;
+	std::vector<DataTag> DT;
+};
+
 class SOBaseScript;
 class SOEnt;
 class SOPlayer;
 class SOText;
-
-enum EntType_enum { ET_ENT, ET_PLAYER, ET_NPC, ET_TILE, ET_PROJECTILE, ET_EFFECT, ET_TEXT };
-typedef enum EntType_enum EntType;
 
 class Abstr_Dispatcher {
 public:
@@ -38,16 +43,6 @@ public:
 	virtual void dispatch(SOEnt& soent);
 	virtual void dispatch(SOPlayer& soplayer);
 	virtual void dispatch(SOText& sotext);
-};
-
-struct EntData {
-	EntData();
-	EntData(std::string ent_name, Packet packet, std::vector<DataTag> datatags, EntType ent_type, std::vector<std::vector<float>> ent_frames);
-	std::string name;
-	Packet P;
-	std::vector<DataTag> dt;
-	EntType type;
-	std::vector<std::vector<float>> frames;
 };
 
 /*

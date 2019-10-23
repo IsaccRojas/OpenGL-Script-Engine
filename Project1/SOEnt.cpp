@@ -7,6 +7,9 @@
 DataTag::DataTag() {}
 DataTag::DataTag(std::string tag_name, float tag_n) : name(tag_name), n(tag_n) {}
 
+EntPage::EntPage() {}
+EntPage::EntPage(Packet p, std::vector<DataTag> dt) : P(p), DT(dt) {}
+
 Dispatcher::Dispatcher() {}
 
 void Dispatcher::dispatch(SOEnt& soent) {
@@ -20,23 +23,12 @@ void Dispatcher::dispatch(SOText& sotext) {
 }
 
 SOEnt::SOEnt(Entity *ent_ptr, SOBaseScript* master_ptr) {
-	//if (EData.type != ET_TEXT)
-		//E = master_ptr->EBuffAlloc(EData.P, master_ptr->getTexture(EData.type), 0);
 	master = master_ptr;
 	E = ent_ptr;
-	//data = EData.dt;
-	//name = EData.name;
-	//ent_type = EData.type;
-	//frames = EData.frames;
 	kill = 0;
 }
 
-void SOEnt::base_script() {
-	//lua_pushlightuserdata(master->L, (void*)this);
-	//lua_setglobal(master->L, "this");
-	//lua_getglobal(master->L, name.c_str());
-	//lua_pcall(master->L, 0, 0, 0);
-}
+void SOEnt::base_script() {}
 
 void SOEnt::run(Abstr_Dispatcher &dispatcher) {
 	dispatcher.dispatch(*this);
