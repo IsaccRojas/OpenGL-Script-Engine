@@ -22,6 +22,8 @@ void Dispatcher::dispatch(SOText& sotext) {
 	sotext.base_script();
 }
 
+SOEntKey::SOEntKey() {}
+
 SOEnt::SOEnt(Entity *ent_ptr, SOBaseScript* master_ptr) {
 	master = master_ptr;
 	E = ent_ptr;

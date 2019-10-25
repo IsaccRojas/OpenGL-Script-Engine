@@ -49,6 +49,12 @@ public:
 INDEX 0 - kill
 */
 
+//private-only class; only SOBaseScript can call constructor
+class SOEntKey {
+	friend class SOBaseScript;
+	SOEntKey();
+};
+
 class SOEnt {
 protected:
 	SOBaseScript* master;
@@ -67,7 +73,10 @@ public:
 	void setIndex(int i);
 
 	EntPage getPage();
-	void commitPage(EntPage pg);
+	//void writePage(int i, EntPage pg);
+
+	//exclusive to SOBaseScript
+	void commitPage(SOEntKey key, EntPage pg);
 };
 
 #endif
