@@ -2,12 +2,18 @@
 #include "SOBaseScript.h"
 #include "SOEntDataBase.h"
 
+/* =============================== DataTag =============================== */
+
 DataTag::DataTag() {}
 DataTag::DataTag(std::string tag_name, float tag_n) : name(tag_name), n(tag_n) {}
+
+/* =============================== EntPage =============================== */
 
 EntPage::EntPage() { b_empty = true; }
 EntPage::EntPage(Packet p, std::vector<DataTag> dt) : P(p), DT(dt) { b_empty = false; }
 bool EntPage::empty() { return b_empty; }
+
+/* ================================ SOEnt ================================ */
 
 SOEnt::SOEnt(Entity *ent_ptr) {
 	E = ent_ptr;
@@ -42,3 +48,6 @@ void SOEnt::setPage(EntPage pg) {
 		DT = pg.DT;
 	}
 }
+
+/* ================================= API ================================= */
+

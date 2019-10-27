@@ -32,16 +32,8 @@ public:
 	std::vector<DataTag> DT;
 };
 
-class SOBaseScript;
-class SOEnt;
-
-/*
-INDEX 0 - kill
-*/
-
 class SOEnt {
 protected:
-	SOBaseScript* master;
 	EntPointer E;
 	std::vector<DataTag> DT;
 	int index;
@@ -61,6 +53,7 @@ public:
 };
 
 class API {
+	//structure *set_of_entities;
 public:
 	API();
 	EntPage readPage(SOEnt* ent);

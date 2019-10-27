@@ -66,11 +66,11 @@ return 0;
 }
 */
 
-SOEnt* SOEntDataBase::exec_func(std::string func, Entity* ent_ptr, SOBaseScript* basescript_ptr) {
+SOEnt* SOEntDataBase::exec_func(std::string func, Entity* ent_ptr) {
 	for (unsigned i = 0; i < libs.size(); i++) {
 		if (libs.at(i).has(func)) {
-			auto f = libs.at(i).get<SOEnt*(Entity*,SOBaseScript*)>(func);
-			auto r = f(ent_ptr, basescript_ptr);
+			auto f = libs.at(i).get<SOEnt*(Entity*)>(func);
+			auto r = f(ent_ptr);
 			return r;
 		}
 	}

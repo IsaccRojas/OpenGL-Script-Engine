@@ -25,7 +25,7 @@ public:
 	calls EntData {init_func}(void) in all loaded libraries and populates local entity data vector*/
 	//int load_ent_data(std::string init_func);
 
-	SOEnt* exec_func(std::string func, Entity* ent_ptr = nullptr, SOBaseScript* basescript_ptr = nullptr);
+	SOEnt* exec_func(std::string func, Entity* ent_ptr = nullptr);
 
 	//get pointer to function 'func'
 	template<typename T>
