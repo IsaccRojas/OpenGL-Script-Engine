@@ -1,12 +1,5 @@
 #include "SOEntDataBase.h"
 
-EntData::EntData() {
-	name = "null";
-	P = Packet();
-	type = ET_ENT;
-}
-EntData::EntData(std::string ent_name, Packet packet, std::vector<DataTag> datatags, EntType ent_type, std::vector<std::vector<float>> ent_frames) : name(ent_name), P(packet), dt(datatags), type(ent_type), frames(ent_frames) {}
-
 SOEntDataBase::SOEntDataBase() {
 	libs.clear();
 	script_fnames.clear();

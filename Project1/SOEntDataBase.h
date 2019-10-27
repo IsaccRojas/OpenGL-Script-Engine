@@ -14,8 +14,6 @@ class SOEntDataBase {
 	std::vector<std::string> script_fnames;
 	std::vector<boost::dll::shared_library> libs;
 public:
-	std::vector<EntData> EData;
-
 	SOEntDataBase();
 
 	//pushes file to library vector

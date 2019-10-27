@@ -93,8 +93,8 @@ void SOBaseScript::base_script() {
 	}
 
 	for (unsigned n = 0; n < entities.size(); n++) {
-		entities.at(n)->run(dispatcher);
-		if (entities.at(n)->getData() == 2)
+		entities.at(n)->base_script();
+		if (entities.at(n)->kill == 2)
 			killed_entities.push_back(entities.at(n));
 	}
 	for (unsigned n = 0; n < killed_entities.size(); n++)
@@ -124,12 +124,12 @@ int SOBaseScript::EBuffDealloc(Entity* Ent) {
 }
 
 SOEnt* SOBaseScript::gen_ent(std::string name) {
-	boost::function<SOEnt*(Entity*, SOBaseScript*)> dl_genf;
-	if (DB.get_func<SOEnt*(Entity*, SOBaseScript*)>(std::string("gen_") + name, &dl_genf) != 0) {
+	boost::function<SOEnt*(Entity*)> dl_genf;
+	if (DB.get_func<SOEnt*(Entity*)>(std::string("gen_") + name, &dl_genf) != 0) {
 		std::cout << "ERROR: could not get entity gen function" << std::endl;
 		return nullptr;
 	}
-	SOEnt* E = dl_genf(this->EBuffAlloc(Packet{}, textures[1], 0), this);
+	SOEnt* E = dl_genf(this->EBuffAlloc(Packet{}, textures[1], 0));
 	entities.push_back(E);
 	entities.back()->setIndex(entities.size() - 1);
 	return entities.back();

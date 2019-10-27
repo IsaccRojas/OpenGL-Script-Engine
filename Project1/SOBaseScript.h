@@ -5,8 +5,6 @@
 
 #include "ScriptObj.h"
 #include "SOEntDataBase.h"
-#include "SOPlayer.h"
-#include "SOText.h"
 
 #include <chrono>
 
@@ -29,8 +27,7 @@ class SOBaseScript : public ScriptObj {
 
 	Resources* res;
 	Image textures[16];
-
-	Dispatcher dispatcher;
+	
 	std::vector<SOEnt*> killed_entities;
 	int frame, cursorx, cursory;
 public:

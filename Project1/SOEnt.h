@@ -3,10 +3,11 @@
 #ifndef SOENT_H_
 #define SOENT_H_
 
-//#include "ScriptObj.h"
 #include "EBuffer/Entity.h"
 #include <boost/dll/config.hpp>
 #include <boost/dll.hpp>
+
+class SOEnt;
 
 enum EntType_enum { ET_ENT, ET_PLAYER, ET_NPC, ET_TILE, ET_PROJECTILE, ET_EFFECT, ET_TEXT };
 typedef enum EntType_enum EntType;
@@ -18,42 +19,25 @@ struct DataTag {
 	float n;
 };
 
-struct EntPage {
+class EntPage {
+	friend class API;
+private:
+	SOEnt *owner;
+	bool b_empty;
+public:
 	EntPage();
 	EntPage(Packet p, std::vector<DataTag> dt);
+	bool empty();
 	Packet P;
 	std::vector<DataTag> DT;
 };
 
 class SOBaseScript;
 class SOEnt;
-class SOPlayer;
-class SOText;
-
-class Abstr_Dispatcher {
-public:
-	virtual void dispatch(SOEnt& soent) = 0;
-	virtual void dispatch(SOPlayer& soplayer) = 0;
-	virtual void dispatch(SOText& sotext) = 0;
-};
-
-class Dispatcher : public Abstr_Dispatcher {
-public:
-	Dispatcher();
-	virtual void dispatch(SOEnt& soent);
-	virtual void dispatch(SOPlayer& soplayer);
-	virtual void dispatch(SOText& sotext);
-};
 
 /*
 INDEX 0 - kill
 */
-
-//private-only class; only SOBaseScript can call constructor
-class SOEntKey {
-	friend class SOBaseScript;
-	SOEntKey();
-};
 
 class SOEnt {
 protected:
@@ -62,9 +46,9 @@ protected:
 	std::vector<DataTag> DT;
 	int index;
 public:
-	SOEnt(Entity *ent_ptr = nullptr, SOBaseScript *master_ptr = nullptr);
+	int kill;
+	SOEnt(Entity *ent_ptr = nullptr);
 	virtual void base_script();
-	virtual void run(Abstr_Dispatcher &dispatcher);
 
 	EntPointer getEntPointer();
 	void setEnt(Entity *ent_ptr);
@@ -73,10 +57,14 @@ public:
 	void setIndex(int i);
 
 	EntPage getPage();
-	//void writePage(int i, EntPage pg);
+	void setPage(EntPage pg);
+};
 
-	//exclusive to SOBaseScript
-	void commitPage(SOEntKey key, EntPage pg);
+class API {
+public:
+	API();
+	EntPage readPage(SOEnt* ent);
+	void writePage(EntPage pg);
 };
 
 #endif

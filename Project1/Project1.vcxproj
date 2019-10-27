@@ -141,8 +141,6 @@
     <ClCompile Include="SOBaseScript.cpp" />
     <ClCompile Include="SOEnt.cpp" />
     <ClCompile Include="SOEntDataBase.cpp" />
-    <ClCompile Include="SOPlayer.cpp" />
-    <ClCompile Include="SOText.cpp" />
     <ClCompile Include="tools.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,8 +154,6 @@
     <ClInclude Include="SOBaseScript.h" />
     <ClInclude Include="SOEnt.h" />
     <ClInclude Include="SOEntDataBase.h" />
-    <ClInclude Include="SOPlayer.h" />
-    <ClInclude Include="SOText.h" />
     <ClInclude Include="tools.h" />
   </ItemGroup>
   <ItemGroup>
