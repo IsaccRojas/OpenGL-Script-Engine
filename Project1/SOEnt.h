@@ -33,6 +33,7 @@ public:
 };
 
 class SOEnt {
+	API_push(SOEnt *ent);
 protected:
 	EntPointer E;
 	std::vector<DataTag> DT;
@@ -53,9 +54,13 @@ public:
 };
 
 class API {
-	//structure *set_of_entities;
+	friend SOEnt::API_push(SOEnt*);
+	//static structure
+	std::vector<EntPage> wr_q;
 public:
 	API();
+	EntPage genEnt(std::string name);
+	void delEnt(SOEnt* ent);
 	EntPage readPage(SOEnt* ent);
 	void writePage(EntPage pg);
 };

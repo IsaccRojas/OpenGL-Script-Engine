@@ -51,3 +51,16 @@ void SOEnt::setPage(EntPage pg) {
 
 /* ================================= API ================================= */
 
+API::API() {}
+
+EntPage API::genEnt(std::string name) {
+	
+}
+
+void API::delEnt(SOEnt* ent) {}
+
+EntPage API::readPage(SOEnt* ent) {}
+
+void API::writePage(EntPage pg) {
+	wr_q.push_back(pg);
+}
