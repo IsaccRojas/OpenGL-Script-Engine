@@ -8,9 +8,8 @@
 
 #include <chrono>
 
-/*
-INDEX 0: PLAYER
-*/
+enum EntType_enum { ET_ENT, ET_PLAYER, ET_NPC, ET_TILE, ET_PROJECTILE, ET_EFFECT, ET_TEXT };
+typedef enum EntType_enum EntType;
 
 class SOBaseScript : public ScriptObj {
 	std::chrono::steady_clock::time_point oldt;
@@ -21,9 +20,12 @@ class SOBaseScript : public ScriptObj {
 	EBuffer* TBuff;
 	GLBuffer<float>* TVertBuf;
 	GLBuffer<unsigned>* TElBuf;
+	MemVec<SOEnt*> MVTiles;
+
 	EBuffer* EBuff;
 	GLBuffer<float>* VertBuf;
 	GLBuffer<unsigned>* ElBuf;
+	MemVec<SOEnt*> MVEntities;
 
 	Resources* res;
 	Image textures[16];
@@ -35,25 +37,27 @@ public:
 	SOBaseScript(Resources* resources, int *err);
 
 	Resources getResources();
-	std::vector<SOEnt*> entities;
-	std::vector<SOEnt*> tiles;
+	Image getTexture(int index);
 
 	void render(unsigned vbo, unsigned vebo);
 	void base_script() override;
 
 	Entity* EBuffAlloc(Packet p, Image imgTex, int prior);
 	int EBuffDealloc(Entity* Ent);
-	SOEnt* gen_ent(std::string name);
-	void del_ent(SOEnt* soentity);
-	Image getTexture(int index);
+
+	EntPage gen_ent(std::string name);
+	void del_ent(EntPage pg);
+
+
 	float get_fps();
 
+	/*
 	void set_map(float* tilepos);
 
 	static int l_gen_ent(lua_State* L);
 	static int l_set_kill(lua_State* L);
 	static int l_get_kill(lua_State* L);
-	static int l_get_master(lua_State* L); /* FIXME: incomplete */
+	static int l_get_master(lua_State* L);
 	static int l_get_ent(lua_State* L);
 	static int l_get_ent_all_t(lua_State* L); //TODO
 	static int l_get_ent_all_tn(lua_State* L);
@@ -80,6 +84,7 @@ public:
 	static int l_setdatai(lua_State* L);
 	static int l_setframe(lua_State* L);
 	static int l_settext(lua_State* L);
+	*/
 };
 
 #endif

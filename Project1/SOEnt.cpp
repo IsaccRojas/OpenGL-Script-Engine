@@ -1,6 +1,4 @@
 #include "SOEnt.h"
-#include "SOBaseScript.h"
-#include "SOEntDataBase.h"
 
 /* =============================== DataTag =============================== */
 
@@ -10,14 +8,14 @@ DataTag::DataTag(std::string tag_name, float tag_n) : name(tag_name), n(tag_n) {
 /* =============================== EntPage =============================== */
 
 EntPage::EntPage() { b_empty = true; }
-EntPage::EntPage(Packet p, std::vector<DataTag> dt) : P(p), DT(dt) { b_empty = false; }
+EntPage::EntPage(Packet p, std::vector<DataTag> dt, int i) : P(p), DT(dt), index(i) { b_empty = false; }
 bool EntPage::empty() { return b_empty; }
 
 /* ================================ SOEnt ================================ */
 
 SOEnt::SOEnt(Entity *ent_ptr) {
 	E = ent_ptr;
-	kill = 0;
+	DT.push_back(DataTag("kill", 0));
 }
 
 void SOEnt::base_script() {}
@@ -36,10 +34,17 @@ void SOEnt::setIndex(int i) {
 	index = i;
 }
 
+float SOEnt::getDataTag(int i) {
+	return DT.at(i).n;
+}
+void SOEnt::setDataTag(int i, float v) {
+	DT.at(i).n = v;
+}
+
 EntPage SOEnt::getPage() {
 	if (E.gent() == nullptr)
 		return EntPage();
-	return EntPage(E.gpack(), DT);
+	return EntPage(E.gpack(), DT, index);
 }
 
 void SOEnt::setPage(EntPage pg) {
@@ -54,12 +59,14 @@ void SOEnt::setPage(EntPage pg) {
 API::API() {}
 
 EntPage API::genEnt(std::string name) {
-	
+	return EntPage();
 }
 
 void API::delEnt(SOEnt* ent) {}
 
-EntPage API::readPage(SOEnt* ent) {}
+EntPage API::readPage(SOEnt* ent) {
+	return EntPage();
+}
 
 void API::writePage(EntPage pg) {
 	wr_q.push_back(pg);

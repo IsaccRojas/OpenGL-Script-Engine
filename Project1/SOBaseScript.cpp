@@ -13,7 +13,7 @@ SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 		std::cout << "ERROR: could not load lib" << std::endl;
 		*err = -1;
 	}
-
+	
 	TBuff = new EBuffer();
 	TVertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(TBuff->vData), GL_DYNAMIC_DRAW);
 	TElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(TBuff->vElements), GL_DYNAMIC_DRAW);
@@ -27,6 +27,8 @@ SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 	ElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(EBuff->vElements), GL_DYNAMIC_DRAW);
 	
 	srand(unsigned(time(NULL))); // ex: rand() % 10 + 1 is a number in the range [1, 10]
+
+	std::cout << *err << " error(s) setting up SOBaseScript." << std::endl;
 
 	if (*err == 0)
 		gen_ent("SOEnt_Test");
@@ -92,13 +94,16 @@ void SOBaseScript::base_script() {
 		//entities.back()->index = entities.size() - 1;
 	}
 
-	for (unsigned n = 0; n < entities.size(); n++) {
-		entities.at(n)->base_script();
-		if (entities.at(n)->kill == 2)
-			killed_entities.push_back(entities.at(n));
+	for (int n = 0; n < MVEntities.size(); n++) {
+		if (MVEntities.exists(n)) {
+			MVEntities.at(n)->base_script();
+			if (MVEntities.at(n)->getDataTag(0) == 2)
+				killed_entities.push_back(MVEntities.at(n));
+		}
 	}
+
 	for (unsigned n = 0; n < killed_entities.size(); n++)
-		del_ent(killed_entities.at(n));
+		del_ent(killed_entities.at(n)->getPage());
 	killed_entities.clear();
 	
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -123,24 +128,27 @@ int SOBaseScript::EBuffDealloc(Entity* Ent) {
 	return EBuff->erase(Ent);
 }
 
-SOEnt* SOBaseScript::gen_ent(std::string name) {
+EntPage SOBaseScript::gen_ent(std::string name) {
 	boost::function<SOEnt*(Entity*)> dl_genf;
 	if (DB.get_func<SOEnt*(Entity*)>(std::string("gen_") + name, &dl_genf) != 0) {
 		std::cout << "ERROR: could not get entity gen function" << std::endl;
-		return nullptr;
+		return EntPage();
 	}
-	SOEnt* E = dl_genf(this->EBuffAlloc(Packet{}, textures[1], 0));
-	entities.push_back(E);
-	entities.back()->setIndex(entities.size() - 1);
-	return entities.back();
+
+	Entity* E = EBuffAlloc(Packet{}, getTexture(1), 0);
+	SOEnt* Ent = dl_genf(E);
+
+	Ent->setIndex(MVEntities.push(Ent));
+	return Ent->getPage();
 }
 
-void SOBaseScript::del_ent(SOEnt* soentity) {
-	int ind = soentity->getIndex();
-	EBuff->erase(soentity->getEntPointer().gent());
-	entities.erase(entities.begin() + ind);
-	for (unsigned n = ind; n < entities.size(); n++)
-		entities.at(n)->setIndex(entities.at(n)->getIndex() - 1);
+void SOBaseScript::del_ent(EntPage pg) {
+	SOEnt* Ent = MVEntities.at(pg.index);
+
+	EBuff->erase(Ent->getEntPointer().gent());
+	MVEntities.erase_at(pg.index);
+
+	delete Ent;
 }
 
 Image SOBaseScript::getTexture(int index) {

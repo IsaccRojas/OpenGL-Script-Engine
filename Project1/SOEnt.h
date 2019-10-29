@@ -9,8 +9,63 @@
 
 class SOEnt;
 
-enum EntType_enum { ET_ENT, ET_PLAYER, ET_NPC, ET_TILE, ET_PROJECTILE, ET_EFFECT, ET_TEXT };
-typedef enum EntType_enum EntType;
+template <class S>
+struct MVNode {
+	MVNode(S x) : data(x) {
+		exists = true;
+	};
+	bool exists;
+	S data;
+};
+
+template <class T>
+class MemVec {
+	std::vector<MVNode<T>> mainvec;
+	std::vector<int> freevec;
+	int sz;
+public:
+	MemVec() {
+		sz = 0;
+	}
+	~MemVec() {
+		this->clear();
+	}
+	int push(T x) {
+		if (freevec.empty()) {
+			mainvec.push_back(x);
+			sz++;
+			return sz - 1;
+		}
+		int index = freevec.back();
+		freevec.pop_back();
+		mainvec.at(index).data = x;
+		mainvec.at(index).exists = true;
+		return index;
+	}
+	void erase_at(int i) {
+		if (mainvec.at(i).exists) {
+			mainvec.at(i).exists = false;
+			freevec.push_back(i);
+		}
+	}
+	bool exists(int i) {
+		return mainvec.at(i).exists;
+	}
+	T at(int i) {
+		return mainvec.at(i).data;
+	}
+	bool empty() {
+		return (sz == 0);
+	}
+	void clear() {
+		mainvec.clear();
+		freevec.clear();
+		sz = 0;
+	}
+	int size() {
+		return sz;
+	}
+};
 
 struct DataTag {
 	DataTag();
@@ -26,14 +81,15 @@ private:
 	bool b_empty;
 public:
 	EntPage();
-	EntPage(Packet p, std::vector<DataTag> dt);
+	EntPage(Packet p, std::vector<DataTag> dt, int i);
 	bool empty();
 	Packet P;
 	std::vector<DataTag> DT;
+	int index;
 };
 
 class SOEnt {
-	API_push(SOEnt *ent);
+	//API_push(SOEnt *ent);
 protected:
 	EntPointer E;
 	std::vector<DataTag> DT;
@@ -49,12 +105,15 @@ public:
 	int getIndex();
 	void setIndex(int i);
 
+	float getDataTag(int i);
+	void setDataTag(int i, float v);
+
 	EntPage getPage();
 	void setPage(EntPage pg);
 };
 
 class API {
-	friend SOEnt::API_push(SOEnt*);
+	//friend SOEnt::API_push(SOEnt*);
 	//static structure
 	std::vector<EntPage> wr_q;
 public:
