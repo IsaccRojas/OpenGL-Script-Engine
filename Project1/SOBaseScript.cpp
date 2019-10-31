@@ -2,12 +2,12 @@
 
 SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 	//store each texture's data and information in array
-	textures[ET_PLAYER] = MakeTextureImage(GL_TEXTURE_2D, "img/playernoeyes.png", 1, 1);
-	textures[ET_NPC] = MakeTextureImage(GL_TEXTURE_2D, "img/npcs.png", 1, 2);
-	textures[ET_TILE] = MakeTextureImage(GL_TEXTURE_2D, "img/tileset.png", 1, 3);
-	textures[ET_PROJECTILE] = MakeTextureImage(GL_TEXTURE_2D, "img/projectiles.png", 1, 4);
-	textures[ET_EFFECT] = MakeTextureImage(GL_TEXTURE_2D, "img/effects.png", 1, 5);
-	textures[ET_TEXT] = MakeTextureImage(GL_TEXTURE_2D, "img/text.png", 1, 6);
+	textures[ET_PLAYER] = MakeTextureImage(GL_TEXTURE_2D, "img/img.png", 1, 1);
+	//textures[ET_NPC] = MakeTextureImage(GL_TEXTURE_2D, "img/npcs.png", 1, 2);
+	//textures[ET_TILE] = MakeTextureImage(GL_TEXTURE_2D, "img/tileset.png", 1, 3);
+	//textures[ET_PROJECTILE] = MakeTextureImage(GL_TEXTURE_2D, "img/projectiles.png", 1, 4);
+	//textures[ET_EFFECT] = MakeTextureImage(GL_TEXTURE_2D, "img/effects.png", 1, 5);
+	//textures[ET_TEXT] = MakeTextureImage(GL_TEXTURE_2D, "img/text.png", 1, 6);
 	
 	if (DB.load("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll") != 0) {
 		std::cout << "ERROR: could not load lib" << std::endl;
