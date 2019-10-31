@@ -13,9 +13,15 @@ bool EntPage::empty() { return b_empty; }
 
 /* ================================ SOEnt ================================ */
 
-SOEnt::SOEnt(Entity *ent_ptr) {
+SOEnt::SOEnt(Entity *ent_ptr, MemVec<SOEnt*> *mv) {
 	E = ent_ptr;
 	DT.push_back(DataTag("kill", 0));
+	api = new API(mv);
+
+}
+
+SOEnt::~SOEnt() {
+	delete api;
 }
 
 void SOEnt::base_script() {}
@@ -47,7 +53,7 @@ EntPage SOEnt::getPage() {
 	return EntPage(E.gpack(), DT, index);
 }
 
-void SOEnt::setPage(EntPage pg) {
+void SOEnt::setPage(EntPage &pg) {
 	if (E.gent() != nullptr) {
 		E.spack(pg.P);
 		DT = pg.DT;
@@ -56,18 +62,52 @@ void SOEnt::setPage(EntPage pg) {
 
 /* ================================= API ================================= */
 
-API::API() {}
+API::API(MemVec<SOEnt*> *mv) {
+	MV = mv;
+}
+
+vec2 API::mouse_pos;
+uint8_t *API::key_input;
+
+void API::setMouse(vec2 mouse) {
+	mouse_pos = mouse;
+}
+
+void API::setKeyInput(uint8_t *keys) {
+	key_input = keys;
+}
+
+vec2 API::getMouse() {
+	return mouse_pos;
+}
+
+uint8_t *API::getKeyInput() {
+	return key_input;
+}
 
 EntPage API::genEnt(std::string name) {
+	gen_q.push_back(name);
 	return EntPage();
 }
 
 void API::delEnt(SOEnt* ent) {}
 
-EntPage API::readPage(SOEnt* ent) {
-	return EntPage();
+EntPage API::readPage(int i) {
+	return this->MV->at(i)->getPage();
 }
 
-void API::writePage(EntPage pg) {
+/*
+EntPage API::readPage(int i) {
+std::cout << "reading " << std::endl;
+if (API::MV->size() > i && i >= 0) {
+std::cout << "i within range" << std::endl;
+return API::MV->at(i)->getPage();
+}
+std::cout << "ERROR: i (" << i << ") is not within valid range" << std::endl;
+return EntPage();
+}
+*/
+
+void API::writePage(EntPage &pg) {
 	wr_q.push_back(pg);
 }

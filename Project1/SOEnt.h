@@ -8,6 +8,7 @@
 #include <boost/dll.hpp>
 
 class SOEnt;
+class API;
 
 template <class S>
 struct MVNode {
@@ -94,9 +95,11 @@ protected:
 	EntPointer E;
 	std::vector<DataTag> DT;
 	int index;
+
 public:
-	int kill;
-	SOEnt(Entity *ent_ptr = nullptr);
+	SOEnt(Entity *ent_ptr = nullptr, MemVec<SOEnt*> *mv = nullptr);
+	~SOEnt();
+
 	virtual void base_script();
 
 	EntPointer getEntPointer();
@@ -109,19 +112,32 @@ public:
 	void setDataTag(int i, float v);
 
 	EntPage getPage();
-	void setPage(EntPage pg);
+	void setPage(EntPage &pg);
+
+	API *api;
 };
 
 class API {
 	//friend SOEnt::API_push(SOEnt*);
-	//static structure
+	friend class SOBaseScript;
+
+	static uint8_t *key_input;
+	static vec2 mouse_pos;
+
+	static void setKeyInput(uint8_t *keys);
+	static void setMouse(vec2 mouse);
+
+	MemVec<SOEnt*> *MV;
 	std::vector<EntPage> wr_q;
+	std::vector<std::string> gen_q;
 public:
-	API();
+	API(MemVec<SOEnt*> *mv);
+	vec2 getMouse();
+	uint8_t *getKeyInput();
 	EntPage genEnt(std::string name);
 	void delEnt(SOEnt* ent);
-	EntPage readPage(SOEnt* ent);
-	void writePage(EntPage pg);
+	EntPage readPage(int i);
+	void writePage(EntPage &pg);
 };
 
 #endif

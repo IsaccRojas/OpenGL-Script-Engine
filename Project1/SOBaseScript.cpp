@@ -30,8 +30,10 @@ SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 
 	std::cout << *err << " error(s) setting up SOBaseScript." << std::endl;
 
-	if (*err == 0)
+	if (*err == 0) {
 		gen_ent("SOEnt_Test");
+		gen_ent("SOEnt_Test");
+	}
 
 	frame = 0;
 	cursorx = 0;
@@ -62,7 +64,10 @@ void SOBaseScript::base_script() {
 	cursory = int(cursory * (res->getRenderWidth() / res->getWindowDims().y));
 	cursorx = int(cursorx - (res->getRenderWidth() / 2));
 	cursory = int(-1 * (cursory - (res->getRenderWidth() / 2)));
+	auto input = SDL_GetKeyboardState(NULL);
 
+	API::setMouse(vec2(cursorx, cursory));
+	API::setKeyInput((uint8_t*)input);
 	//if (oldcursx != cursorx || oldcursy != cursory)
 	//	std::cout << "x " << cursorx << " y " << cursory << std::endl;
 	//lua_pushnumber(L, cursorx);
@@ -80,23 +85,16 @@ void SOBaseScript::base_script() {
 	//	lua_pushnumber(L, 0);
 	//lua_setglobal(L, "MOUSE_RIGHT");
 
-	if (frame % 105 == 0) {
-		int x = int(bool(rand() % 2));
-		int y = int(bool(rand() % 2));
-		int two = rand() % 3 + 1;
-		if (x == 0) x = -1;
-		if (y == 0) y = -1;
-		if (two == 2)
-			0;//gen_ent("NPC2");
-		else
-			0;//gen_ent("NPC");
-		//entities.back()->E.spos(272.0f * float(x), 272.0f * float(y));
-		//entities.back()->index = entities.size() - 1;
-	}
-
 	for (int n = 0; n < MVEntities.size(); n++) {
 		if (MVEntities.exists(n)) {
 			MVEntities.at(n)->base_script();
+
+			while (MVEntities.at(n)->api->wr_q.size() > 0) {
+				EntPage pg = MVEntities.at(n)->api->wr_q.back();
+				MVEntities.at(n)->api->wr_q.pop_back();
+				MVEntities.at(pg.index)->setPage(pg);
+			}
+
 			if (MVEntities.at(n)->getDataTag(0) == 2)
 				killed_entities.push_back(MVEntities.at(n));
 		}
@@ -129,14 +127,14 @@ int SOBaseScript::EBuffDealloc(Entity* Ent) {
 }
 
 EntPage SOBaseScript::gen_ent(std::string name) {
-	boost::function<SOEnt*(Entity*)> dl_genf;
-	if (DB.get_func<SOEnt*(Entity*)>(std::string("gen_") + name, &dl_genf) != 0) {
+	boost::function<SOEnt*(Entity*, MemVec<SOEnt*>*)> dl_genf;
+	if (DB.get_func<SOEnt*(Entity*, MemVec<SOEnt*>*)>(std::string("gen_") + name, &dl_genf) != 0) {
 		std::cout << "ERROR: could not get entity gen function" << std::endl;
 		return EntPage();
 	}
 
 	Entity* E = EBuffAlloc(Packet{}, getTexture(1), 0);
-	SOEnt* Ent = dl_genf(E);
+	SOEnt* Ent = dl_genf(E, &MVEntities);
 
 	Ent->setIndex(MVEntities.push(Ent));
 	return Ent->getPage();
