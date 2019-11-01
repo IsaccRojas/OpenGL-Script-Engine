@@ -116,6 +116,7 @@ public:
 	_API *API;
 };
 
+/*
 namespace _API_global {
 	extern uint8_t *key_input;
 	extern vec2 mouse_pos;
@@ -123,6 +124,17 @@ namespace _API_global {
 	extern vec2 _getMouse();
 	extern void _setKeyInput(uint8_t *keys);
 	extern void _setMouse(vec2 mouse);
+}
+*/
+
+class _API_global {
+	static _API_global *inst;
+	int d;
+	_API_global();
+public:
+	static _API_global *getInst();
+	int get();
+	void set(int data);
 }
 
 class _API {

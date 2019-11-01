@@ -61,6 +61,7 @@ void SOEnt::setPage(EntPage &pg) {
 
 /* ================================= API ================================= */
 
+/*
 namespace _API_global {
 	uint8_t *key_input = nullptr;
 	vec2 mouse_pos = vec2();
@@ -77,6 +78,24 @@ namespace _API_global {
 	void _setMouse(vec2 mouse) {
 		mouse_pos = mouse;
 	}
+}
+*/
+
+_API_global::_API_global() {
+	d = 0;
+}
+
+_API_global * _API_global::getInst() {
+	if (!inst)
+		inst = new _API_global;
+	return inst;
+}
+
+int _API_global::get() {
+	return this->d;
+}
+void _API_global::set(int data) {
+	this->d = data;
 }
 
 _API::_API(MemVec<SOEnt*> *mv) {
