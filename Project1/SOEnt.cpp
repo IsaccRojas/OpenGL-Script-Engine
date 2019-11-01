@@ -16,12 +16,11 @@ bool EntPage::empty() { return b_empty; }
 SOEnt::SOEnt(Entity *ent_ptr, MemVec<SOEnt*> *mv) {
 	E = ent_ptr;
 	DT.push_back(DataTag("kill", 0));
-	api = new API(mv);
-
+	API = new _API(mv);
 }
 
 SOEnt::~SOEnt() {
-	delete api;
+	delete API;
 }
 
 void SOEnt::base_script() {}
@@ -62,37 +61,44 @@ void SOEnt::setPage(EntPage &pg) {
 
 /* ================================= API ================================= */
 
-API::API(MemVec<SOEnt*> *mv) {
+namespace _API_global {
+	uint8_t *key_input = nullptr;
+	vec2 mouse_pos = vec2();
+
+	uint8_t * _getKeyInput() {
+		return key_input;
+	}
+	vec2 _getMouse() {
+		return mouse_pos;
+	}
+	void _setKeyInput(uint8_t *keys) {
+		key_input = keys;
+	}
+	void _setMouse(vec2 mouse) {
+		mouse_pos = mouse;
+	}
+}
+
+_API::_API(MemVec<SOEnt*> *mv) {
 	MV = mv;
 }
 
-vec2 API::mouse_pos;
-uint8_t *API::key_input;
-
-void API::setMouse(vec2 mouse) {
-	mouse_pos = mouse;
+vec2 _API::getMouse() {
+	return _API_global::_getMouse();
 }
 
-void API::setKeyInput(uint8_t *keys) {
-	key_input = keys;
+uint8_t *_API::getKeyInput() {
+	return _API_global::_getKeyInput();
 }
 
-vec2 API::getMouse() {
-	return mouse_pos;
-}
-
-uint8_t *API::getKeyInput() {
-	return key_input;
-}
-
-EntPage API::genEnt(std::string name) {
+EntPage _API::genEnt(std::string name) {
 	gen_q.push_back(name);
 	return EntPage();
 }
 
-void API::delEnt(SOEnt* ent) {}
+void _API::delEnt(SOEnt* ent) {}
 
-EntPage API::readPage(int i) {
+EntPage _API::readPage(int i) {
 	return this->MV->at(i)->getPage();
 }
 
@@ -108,6 +114,6 @@ return EntPage();
 }
 */
 
-void API::writePage(EntPage &pg) {
+void _API::writePage(EntPage &pg) {
 	wr_q.push_back(pg);
 }

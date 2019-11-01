@@ -66,8 +66,10 @@ void SOBaseScript::base_script() {
 	cursory = int(-1 * (cursory - (res->getRenderWidth() / 2)));
 	auto input = SDL_GetKeyboardState(NULL);
 
-	API::setMouse(vec2(cursorx, cursory));
-	API::setKeyInput((uint8_t*)input);
+	_API_global::_setMouse(vec2((float)cursorx, (float)cursory));
+	_API_global::_setKeyInput((uint8_t*)input);
+
+	std::cout << "SOBaseScript: " << "X " << _API_global::mouse_pos.x << ", Y " << _API_global::mouse_pos.y << std::endl;
 	//if (oldcursx != cursorx || oldcursy != cursory)
 	//	std::cout << "x " << cursorx << " y " << cursory << std::endl;
 	//lua_pushnumber(L, cursorx);
@@ -89,9 +91,9 @@ void SOBaseScript::base_script() {
 		if (MVEntities.exists(n)) {
 			MVEntities.at(n)->base_script();
 
-			while (MVEntities.at(n)->api->wr_q.size() > 0) {
-				EntPage pg = MVEntities.at(n)->api->wr_q.back();
-				MVEntities.at(n)->api->wr_q.pop_back();
+			while (MVEntities.at(n)->API->wr_q.size() > 0) {
+				EntPage pg = MVEntities.at(n)->API->wr_q.back();
+				MVEntities.at(n)->API->wr_q.pop_back();
 				MVEntities.at(pg.index)->setPage(pg);
 			}
 

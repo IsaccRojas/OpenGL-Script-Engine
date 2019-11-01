@@ -8,7 +8,7 @@
 #include <boost/dll.hpp>
 
 class SOEnt;
-class API;
+class _API;
 
 template <class S>
 struct MVNode {
@@ -90,7 +90,6 @@ public:
 };
 
 class SOEnt {
-	//API_push(SOEnt *ent);
 protected:
 	EntPointer E;
 	std::vector<DataTag> DT;
@@ -114,24 +113,27 @@ public:
 	EntPage getPage();
 	void setPage(EntPage &pg);
 
-	API *api;
+	_API *API;
 };
 
-class API {
+namespace _API_global {
+	extern uint8_t *key_input;
+	extern vec2 mouse_pos;
+	extern uint8_t * _getKeyInput();
+	extern vec2 _getMouse();
+	extern void _setKeyInput(uint8_t *keys);
+	extern void _setMouse(vec2 mouse);
+}
+
+class _API {
 	//friend SOEnt::API_push(SOEnt*);
 	friend class SOBaseScript;
-
-	static uint8_t *key_input;
-	static vec2 mouse_pos;
-
-	static void setKeyInput(uint8_t *keys);
-	static void setMouse(vec2 mouse);
 
 	MemVec<SOEnt*> *MV;
 	std::vector<EntPage> wr_q;
 	std::vector<std::string> gen_q;
 public:
-	API(MemVec<SOEnt*> *mv);
+	_API(MemVec<SOEnt*> *mv);
 	vec2 getMouse();
 	uint8_t *getKeyInput();
 	EntPage genEnt(std::string name);

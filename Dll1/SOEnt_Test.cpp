@@ -26,20 +26,21 @@ SOEnt_Test::SOEnt_Test(Entity *ent_ptr, MemVec<SOEnt*> *mv) : SOEnt(ent_ptr, mv)
 
 void SOEnt_Test::base_script() {
 	if (index != 1 && pg.empty())
-		pg = api->readPage(1);
+		pg = API->readPage(1);
 
 	if (!(pg.empty())) {
 		pg.DT.at(1).n = E.gpos().x;
 		pg.DT.at(2).n = E.gpos().y;
 		pg.DT.at(3).n = -0.07f;
-		api->writePage(pg);
+		API->writePage(pg);
 	}
 
 	if (index == 0) {
-		float X = api->getMouse().x;
-		float Y = api->getMouse().y;
-		DT.at(1).n = X;
-		DT.at(2).n = Y;
+		float X = API->getMouse().x;
+		float Y = API->getMouse().y;
+		std::cout << "SOEnt_Test: " << "X " << X << ", Y " << Y << std::endl;
+		//DT.at(1).n = X;
+		//DT.at(2).n = Y;
 	}
 
 	E.spos(DT.at(1).n + (r * cos(f * DT.at(3).n)), DT.at(2).n + (r * sin(f * DT.at(3).n)));
