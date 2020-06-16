@@ -10,8 +10,16 @@
 #include <SOIL.h>
 
 struct vec2 {
-	vec2(float x, float y);
-	vec2();
+	vec2(float x = 0.0f, float y = 0.0f);
+	void operator=(vec2 v);
+	void operator-=(vec2 v);
+	void operator+=(vec2 v);
+	void operator*=(float c);
+	void operator/=(float c);
+	vec2 operator-(vec2 v);
+	vec2 operator+(vec2 v);
+	vec2 operator*(float c);
+	vec2 operator/(float c);
 	float x;
 	float y;
 };

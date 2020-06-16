@@ -30,9 +30,16 @@ SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 
 	std::cout << *err << " error(s) setting up SOBaseScript." << std::endl;
 
+	API_globals = _API_global::getInst();
+
 	if (*err == 0) {
+		gen_ent("SOEnt_Pl");
 		gen_ent("SOEnt_Test");
-		gen_ent("SOEnt_Test");
+		srand(time(NULL));
+		for (int i = 0; i < 8; i++) {
+			gen_ent("SOEnt_G");
+			MVEntities.at(i + 2)->getEntPointer().spos(-96.0f + float(rand() % 96), -96.0f + float(rand() % 96));
+		}
 	}
 
 	frame = 0;
@@ -66,26 +73,13 @@ void SOBaseScript::base_script() {
 	cursory = int(-1 * (cursory - (res->getRenderWidth() / 2)));
 	auto input = SDL_GetKeyboardState(NULL);
 
-	_API_global::_setMouse(vec2((float)cursorx, (float)cursory));
-	_API_global::_setKeyInput((uint8_t*)input);
+	API_globals->_setMouse(vec2((float)cursorx, (float)cursory));
+	API_globals->_setKeyInput((uint8_t*)input);
 
-	std::cout << "SOBaseScript: " << "X " << _API_global::mouse_pos.x << ", Y " << _API_global::mouse_pos.y << std::endl;
-	//if (oldcursx != cursorx || oldcursy != cursory)
-	//	std::cout << "x " << cursorx << " y " << cursory << std::endl;
-	//lua_pushnumber(L, cursorx);
-	//lua_setglobal(L, "CURSOR_X");
-	//lua_pushnumber(L, cursory);
-	//lua_setglobal(L, "CURSOR_Y");
 	//if (click & SDL_BUTTON(SDL_BUTTON_LEFT))
 	//	lua_pushnumber(L, 1);
-	//else
-	//	lua_pushnumber(L, 0);
-	//lua_setglobal(L, "MOUSE_LEFT");
 	//if (click & SDL_BUTTON(SDL_BUTTON_RIGHT))
 	//	lua_pushnumber(L, 1);
-	//else
-	//	lua_pushnumber(L, 0);
-	//lua_setglobal(L, "MOUSE_RIGHT");
 
 	for (int n = 0; n < MVEntities.size(); n++) {
 		if (MVEntities.exists(n)) {
@@ -137,8 +131,9 @@ EntPage SOBaseScript::gen_ent(std::string name) {
 
 	Entity* E = EBuffAlloc(Packet{}, getTexture(1), 0);
 	SOEnt* Ent = dl_genf(E, &MVEntities);
-
+	
 	Ent->setIndex(MVEntities.push(Ent));
+	Ent->API->setGlobals(API_globals);
 	return Ent->getPage();
 }
 

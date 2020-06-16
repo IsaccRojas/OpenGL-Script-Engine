@@ -22,28 +22,25 @@ SOEnt_Test::SOEnt_Test(Entity *ent_ptr, MemVec<SOEnt*> *mv) : SOEnt(ent_ptr, mv)
 	DT.push_back(DataTag("centerx", 0.0f));
 	DT.push_back(DataTag("centery", 0.0f));
 	DT.push_back(DataTag("speed", 0.07f));
+	DT.push_back(DataTag("toffset", 0.0f));
 }
 
 void SOEnt_Test::base_script() {
-	if (index != 1 && pg.empty())
-		pg = API->readPage(1);
+	E.spos(
+		DT.at(1).n + (r * cos(f * DT.at(3).n + DT.at(4).n)), 
+		DT.at(2).n + (r * sin(f * DT.at(3).n + DT.at(4).n))
+	);
 
-	if (!(pg.empty())) {
-		pg.DT.at(1).n = E.gpos().x;
-		pg.DT.at(2).n = E.gpos().y;
-		pg.DT.at(3).n = -0.07f;
-		API->writePage(pg);
-	}
+	//if (index != 1 && pg.empty())
+	//	pg = API->readPage(1);
 
-	if (index == 0) {
-		float X = API->getMouse().x;
-		float Y = API->getMouse().y;
-		std::cout << "SOEnt_Test: " << "X " << X << ", Y " << Y << std::endl;
-		//DT.at(1).n = X;
-		//DT.at(2).n = Y;
-	}
+	//if (!(pg.empty())) {
+	//	pg.DT.at(1).n = E.gpos().x;
+	//	pg.DT.at(2).n = E.gpos().y;
+	//	pg.DT.at(4).n = 3.14159265f;
+	//	API->writePage(pg);
+	//}
 
-	E.spos(DT.at(1).n + (r * cos(f * DT.at(3).n)), DT.at(2).n + (r * sin(f * DT.at(3).n)));
 	f++;
 }
 

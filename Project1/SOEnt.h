@@ -116,36 +116,37 @@ public:
 	_API *API;
 };
 
-/*
-namespace _API_global {
-	extern uint8_t *key_input;
-	extern vec2 mouse_pos;
-	extern uint8_t * _getKeyInput();
-	extern vec2 _getMouse();
-	extern void _setKeyInput(uint8_t *keys);
-	extern void _setMouse(vec2 mouse);
-}
-*/
-
 class _API_global {
 	static _API_global *inst;
-	int d;
+
+	uint8_t *key_input;
+	vec2 mouse_pos;
+	
 	_API_global();
 public:
 	static _API_global *getInst();
-	int get();
-	void set(int data);
-}
+	
+	~_API_global();
+
+	uint8_t * _getKeyInput();
+	vec2 _getMouse();
+	void _setKeyInput(uint8_t *keys);
+	void _setMouse(vec2 mouse);
+};
 
 class _API {
 	//friend SOEnt::API_push(SOEnt*);
 	friend class SOBaseScript;
 
 	MemVec<SOEnt*> *MV;
+	_API_global *globals;
 	std::vector<EntPage> wr_q;
 	std::vector<std::string> gen_q;
 public:
 	_API(MemVec<SOEnt*> *mv);
+
+	void setGlobals(_API_global *global);
+
 	vec2 getMouse();
 	uint8_t *getKeyInput();
 	EntPage genEnt(std::string name);

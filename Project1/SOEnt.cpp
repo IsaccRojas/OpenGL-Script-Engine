@@ -61,28 +61,11 @@ void SOEnt::setPage(EntPage &pg) {
 
 /* ================================= API ================================= */
 
-/*
-namespace _API_global {
-	uint8_t *key_input = nullptr;
-	vec2 mouse_pos = vec2();
-
-	uint8_t * _getKeyInput() {
-		return key_input;
-	}
-	vec2 _getMouse() {
-		return mouse_pos;
-	}
-	void _setKeyInput(uint8_t *keys) {
-		key_input = keys;
-	}
-	void _setMouse(vec2 mouse) {
-		mouse_pos = mouse;
-	}
-}
-*/
+_API_global * _API_global::inst = 0;
 
 _API_global::_API_global() {
-	d = 0;
+	key_input = nullptr;
+	mouse_pos = vec2();
 }
 
 _API_global * _API_global::getInst() {
@@ -91,23 +74,38 @@ _API_global * _API_global::getInst() {
 	return inst;
 }
 
-int _API_global::get() {
-	return this->d;
+_API_global::~_API_global() {
+	delete inst;
+	inst = 0;
 }
-void _API_global::set(int data) {
-	this->d = data;
+
+uint8_t * _API_global::_getKeyInput() {
+	return key_input;
+}
+vec2 _API_global::_getMouse() {
+	return mouse_pos;
+}
+void _API_global::_setKeyInput(uint8_t *keys) {
+	key_input = keys;
+}
+void _API_global::_setMouse(vec2 mouse) {
+	mouse_pos = mouse;
 }
 
 _API::_API(MemVec<SOEnt*> *mv) {
 	MV = mv;
 }
 
+void _API::setGlobals(_API_global *global) {
+	globals = global;
+}
+
 vec2 _API::getMouse() {
-	return _API_global::_getMouse();
+	return globals->_getMouse();
 }
 
 uint8_t *_API::getKeyInput() {
-	return _API_global::_getKeyInput();
+	return globals->_getKeyInput();
 }
 
 EntPage _API::genEnt(std::string name) {

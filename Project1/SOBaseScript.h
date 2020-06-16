@@ -27,6 +27,8 @@ class SOBaseScript : public ScriptObj {
 	GLBuffer<unsigned>* ElBuf;
 	MemVec<SOEnt*> MVEntities;
 
+	_API_global *API_globals;
+
 	Resources* res;
 	Image textures[16];
 	
