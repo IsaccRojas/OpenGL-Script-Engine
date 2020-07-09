@@ -2,12 +2,12 @@
 
 SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 	//store each texture's data and information in array
-	textures[ET_PLAYER] = MakeTextureImage(GL_TEXTURE_2D, "img/img.png", 1, 1);
-	//textures[ET_NPC] = MakeTextureImage(GL_TEXTURE_2D, "img/npcs.png", 1, 2);
-	//textures[ET_TILE] = MakeTextureImage(GL_TEXTURE_2D, "img/tileset.png", 1, 3);
-	//textures[ET_PROJECTILE] = MakeTextureImage(GL_TEXTURE_2D, "img/projectiles.png", 1, 4);
-	//textures[ET_EFFECT] = MakeTextureImage(GL_TEXTURE_2D, "img/effects.png", 1, 5);
-	//textures[ET_TEXT] = MakeTextureImage(GL_TEXTURE_2D, "img/text.png", 1, 6);
+	textures[ET_PL] = MakeTextureImage(GL_TEXTURE_2D, "img/img.png", 1, 1);
+	//textures[ET_2] = MakeTextureImage(GL_TEXTURE_2D, "img/2.png", 1, 2);
+	//textures[ET_3] = MakeTextureImage(GL_TEXTURE_2D, "img/3.png", 1, 3);
+	//textures[ET_4] = MakeTextureImage(GL_TEXTURE_2D, "img/4.png", 1, 4);
+	//textures[ET_5] = MakeTextureImage(GL_TEXTURE_2D, "img/5.png", 1, 5);
+	//textures[ET_6] = MakeTextureImage(GL_TEXTURE_2D, "img/6.png", 1, 6);
 	
 	if (DB.load("C:/Users/isacc/source/repos/Project1/Debug/Dll1.dll") != 0) {
 		std::cout << "ERROR: could not load lib" << std::endl;
@@ -25,8 +25,6 @@ SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 	EBuff = new EBuffer();
 	VertBuf = new GLBuffer<float>(GL_ARRAY_BUFFER, &(EBuff->vData), GL_DYNAMIC_DRAW);
 	ElBuf = new GLBuffer<unsigned>(GL_ELEMENT_ARRAY_BUFFER, &(EBuff->vElements), GL_DYNAMIC_DRAW);
-	
-	srand(unsigned(time(NULL))); // ex: rand() % 10 + 1 is a number in the range [1, 10]
 
 	std::cout << *err << " error(s) setting up SOBaseScript." << std::endl;
 
@@ -34,11 +32,12 @@ SOBaseScript::SOBaseScript(Resources* resources, int *err) : res(resources) {
 
 	if (*err == 0) {
 		gen_ent("SOEnt_Pl");
-		gen_ent("SOEnt_Test");
-		srand(time(NULL));
+
+		gen.seed(unsigned(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+		distr = std::uniform_real_distribution<float>(-96.0f, 96.0f);
 		for (int i = 0; i < 8; i++) {
 			gen_ent("SOEnt_G");
-			MVEntities.at(i + 2)->getEntPointer().spos(-96.0f + float(rand() % 96), -96.0f + float(rand() % 96));
+			MVEntities.at(i + 1)->getEntPointer().spos(distr(gen), distr(gen));
 		}
 	}
 
@@ -112,7 +111,7 @@ void SOBaseScript::base_script() {
 }
 
 Entity* SOBaseScript::EBuffAlloc(Packet p, Image imgTex, int prior) {
-	if (imgTex.texture_unit == ET_TILE)
+	if (imgTex.texture_unit == ET_1)
 		return TBuff->allocateEntity(p, imgTex, prior);
 	else
 		return EBuff->allocateEntity(p, imgTex, prior);

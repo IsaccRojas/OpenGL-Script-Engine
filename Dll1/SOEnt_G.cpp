@@ -10,9 +10,10 @@ class SOEnt_G : public SOEnt {
 public:
 	SOEnt_G(Entity *ent_ptr, MemVec<SOEnt*> *mv);
 	void base_script() override;
+	void on_collide() override;
 
 	void wander();
-	void seek();
+	void run();
 	vec2 dir;
 
 	//EntPage pg;
@@ -29,27 +30,35 @@ SOEnt_G::SOEnt_G(Entity *ent_ptr, MemVec<SOEnt*> *mv) : SOEnt(ent_ptr, mv) {
 		16, 16	//uvw, uvh
 	});
 
-	srand(time(NULL));
+	std::default_random_engine gen;
+	gen.seed(unsigned(std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+	std::uniform_real_distribution<float> distr(0.0f, 60.0f);
 
-	DT.push_back(DataTag("seek", 0.0f));									//1
-	DT.push_back(DataTag("behavior", 1.0f));								//2
-	DT.push_back(DataTag("behavior_t", float(rand() % 60)));				//3
-	DT.push_back(DataTag("behavior_tm", 60.0f + float(rand() % 10 - 8)));	//4
-	DT.push_back(DataTag("speed", 0.2f));									//5
+	DT.push_back(DataTag("mode", 0.0f));							//1
+	DT.push_back(DataTag("behavior", 1.0f));						//2
+	DT.push_back(DataTag("behavior_t", distr(gen)));				//3
+
+	distr = std::uniform_real_distribution<float>(-10.0f, 10.0f);
+
+	DT.push_back(DataTag("behavior_t_max", 60.0f + distr(gen)));	//4
+	DT.push_back(DataTag("speed", 0.2f));							//5
 }
 
-//float mag(vec2 vec) {
-//	return sqrtf((vec.x * vec.x) + (vec.y * vec.y));
-//}
-
 void SOEnt_G::base_script() {
-	int sk = int(DT.at(1).n);
+	//check for collision
+	int mode = 0;
+	EntPage pg = API->readPage(0);
+	int d = int(dist(E.gpos(), vec2(pg.P.x, pg.P.y)));
+	if (d < 36)
+		mode = 1;
 	
 	//mode
-	if (sk == 1)
-		seek();
+	if (mode)
+		run();
 	else
 		wander();
+
+	DT.at(1).n = float(mode);
 }
 
 void SOEnt_G::wander() {
@@ -96,9 +105,22 @@ void SOEnt_G::wander() {
 	DT.at(5).n = s;
 }
 
-void SOEnt_G::seek() {
+void SOEnt_G::run() {
+	float rs = DT.at(5).n;
+	rs = 1.0f;
 
+	EntPage pg = API->readPage(0);
+	vec2 pos = E.gpos();
+	vec2 p_pos = vec2(pg.P.x, pg.P.y);
+	vec2 run_dir = vec2(pos.x - p_pos.x, pos.y - p_pos.y);
+	run_dir /= mag(run_dir);
+
+	E.spos(pos.x + run_dir.x * rs, pos.y + run_dir.y * rs);
+
+	DT.at(5).n = rs;
 }
+
+void SOEnt_G::on_collide() {}
 
 SOEnt *gen_SOEnt_G(Entity *ent_ptr, MemVec<SOEnt*> *mv) {
 	return new SOEnt_G(ent_ptr, mv);

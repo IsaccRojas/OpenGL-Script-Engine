@@ -8,12 +8,15 @@
 
 #include <chrono>
 
-enum EntType_enum { ET_ENT, ET_PLAYER, ET_NPC, ET_TILE, ET_PROJECTILE, ET_EFFECT, ET_TEXT };
+enum EntType_enum { ET_1, ET_PL, ET_2, ET_3, ET_4, ET_5 };
 typedef enum EntType_enum EntType;
 
 class SOBaseScript : public ScriptObj {
 	std::chrono::steady_clock::time_point oldt;
 	std::chrono::steady_clock::time_point newt;
+
+	std::default_random_engine gen;
+	std::uniform_real_distribution<float> distr;
 
 	SOEntDataBase DB;
 

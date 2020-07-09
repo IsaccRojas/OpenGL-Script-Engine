@@ -24,6 +24,7 @@ SOEnt::~SOEnt() {
 }
 
 void SOEnt::base_script() {}
+void SOEnt::on_collide() {}
 
 EntPointer SOEnt::getEntPointer() {
 	return E;

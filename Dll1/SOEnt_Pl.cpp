@@ -19,10 +19,6 @@ SOEnt_Pl::SOEnt_Pl(Entity *ent_ptr, MemVec<SOEnt*> *mv) : SOEnt(ent_ptr, mv) {
 	DT.push_back(DataTag("maxspd", 2.0f));	//3
 }
 
-float mag(vec2 vec) {
-	return sqrtf((vec.x * vec.x) + (vec.y * vec.y));
-}
-
 void SOEnt_Pl::base_script() {
 	uint8_t *in = API->getKeyInput();
 

@@ -7,6 +7,7 @@ class SOEnt_Test : public SOEnt {
 public:
 	SOEnt_Test(Entity *ent_ptr, MemVec<SOEnt*> *mv);
 	void base_script() override;
+	void on_collide() override;
 	float r;
 	float f;
 	bool b;
@@ -43,6 +44,8 @@ void SOEnt_Test::base_script() {
 
 	f++;
 }
+
+void SOEnt_Test::on_collide() {}
 
 SOEnt *gen_SOEnt_Test(Entity *ent_ptr, MemVec<SOEnt*> *mv) {
 	return new SOEnt_Test(ent_ptr, mv);

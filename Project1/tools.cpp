@@ -34,6 +34,14 @@ vec2 vec2::operator/(float c) {
 	return vec2(x / c, y / c);
 }
 
+float mag(vec2 vec) {
+	return sqrtf((vec.x * vec.x) + (vec.y * vec.y));
+}
+
+float dist(vec2 vec1, vec2 vec2) {
+	return sqrtf(((vec2.x - vec1.x)*(vec2.x - vec1.x)) + ((vec2.y - vec1.y)*(vec2.y - vec1.y)));
+}
+
 Image::Image(int width, int height, int tex_unit, unsigned char* data, const char* filename) : img_width(width), img_height(height), texture_unit(tex_unit), img_data(data), img_filename(filename) {}
 Image::Image() {
 	img_width = 0;

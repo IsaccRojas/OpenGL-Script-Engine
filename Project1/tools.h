@@ -24,6 +24,10 @@ struct vec2 {
 	float y;
 };
 
+float mag(vec2 vec);
+
+float dist(vec2 vec1, vec2 vec2);
+
 class Image {
 public:
 	int img_width = 0;

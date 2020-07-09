@@ -100,6 +100,7 @@ public:
 	~SOEnt();
 
 	virtual void base_script();
+	virtual void on_collide();
 
 	EntPointer getEntPointer();
 	void setEnt(Entity *ent_ptr);
