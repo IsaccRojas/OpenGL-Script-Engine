@@ -6,19 +6,22 @@ int mloop(Resources* res) {
 	setup(res);
 
 	int err = 0;
-	SOBaseScript* main_script = new SOBaseScript(res, &err); //define new base script (root script for engine to run under)
+	//define new base script (root script for engine to run under)
+	SOBaseScript* main_script = new SOBaseScript(res, &err);
 	if (err != 0) {
 		std::cout << "ERROR: errors constructing SOBaseScript" << std::endl;
 		delete main_script;
 		return -1;
 	}
+
 	while (res->getEvent()->type != SDL_QUIT && !(SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE])) {
-		SDL_PollEvent(res->getEvent()); //poll for events
+		//poll for events
+		SDL_PollEvent(res->getEvent());
 
 		main_script->base_script();
 	}
-	delete main_script;
 
+	delete main_script;
 	return 0;
 }
 

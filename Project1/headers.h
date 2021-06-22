@@ -4,6 +4,8 @@
 #ifndef INCLUDES_H_
 #define INCLUDES_H_
 
+//collection of STL, OpenGL, SDL2, and Lua headers
+
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

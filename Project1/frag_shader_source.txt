@@ -5,10 +5,14 @@ in vec2 frag_tex_coords;
 in float frag_sampler;
 out vec4 Color;
 
+//hardcode texture sample uniform to 4
 layout(location = 4) uniform sampler2D tex_samplers[16];
 
 void main() {
+	//get pixel color of texture
 	Color = texture(tex_samplers[int(frag_sampler)], frag_tex_coords);
+
+	//discard pixels of RGB color (255, 49, 234) for transparency effect
 	if (Color.r == 255.0/255.0 && Color.g == 49.0/255.0 && Color.b == 234.0/255.0) {
 		discard;
 	}

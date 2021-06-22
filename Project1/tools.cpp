@@ -52,9 +52,11 @@ Image::Image() {
 }
 
 std::string getFileSource(const char* file_name, int* length) {
+	//open input file stream
 	std::string file_source_str, line;
 	std::ifstream file(file_name);
 
+	//read source into string
 	while (std::getline(file, line))
 		file_source_str += line + "\n";
 	file.close();
@@ -67,6 +69,8 @@ Image MakeImage(const char* image_source) {
 	Image image;
 	int image_width = 0;
 	int image_height = 0;
+
+	//get image data and store parameters
 	unsigned char* image_data = SOIL_load_image(image_source, &image_width, &image_height, 0, SOIL_LOAD_RGBA);
 	image.img_width = image_width;
 	image.img_height = image_height;

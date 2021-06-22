@@ -10,8 +10,11 @@ out float frag_sampler;
 layout(location = 3) uniform mat4 MVP;
 
 void main() {
+	//pass texture parameters to fragment shader
 	frag_tex_coords = tex_coords;
 	frag_sampler = sampler;
-	//round(vertex.x), round(vertex.y)
+
+	//set gl_Position to 2D vertex transformed by matrix
+	/*round(vertex.x), round(vertex.y)*/
 	gl_Position = MVP*vec4(round(vertex.x), round(vertex.y), 0.0, 1.0);
 }

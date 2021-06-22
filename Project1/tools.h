@@ -9,6 +9,7 @@
 #include <random>
 #include <SOIL.h>
 
+// struct for implementing 2D math vector
 struct vec2 {
 	vec2(float x = 0.0f, float y = 0.0f);
 	void operator=(vec2 v);
@@ -24,10 +25,13 @@ struct vec2 {
 	float y;
 };
 
+//magnitude (length) of a vector
 float mag(vec2 vec);
 
+//distance between two points
 float dist(vec2 vec1, vec2 vec2);
 
+//helper class for encapsulating image data
 class Image {
 public:
 	int img_width = 0;
@@ -36,7 +40,9 @@ public:
 	const char* img_filename;
 	unsigned tex;
 	unsigned texture_unit;
+	//instantiates Image and loads it with image data using SOIL
 	Image(int width, int height, int tex_unit, unsigned char* data, const char* filename);
+	//instantiates empty Image
 	Image();
 };
 

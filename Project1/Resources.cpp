@@ -2,14 +2,21 @@
 
 Resources::Resources(int gl_majorver, int gl_minorver, int window_w, int window_h, int window_x, int window_y, float render_width, std::string window_name, std::string vertex_shader_location, std::string fragment_shader_location, Attrib attribs[], int num_attribs, unsigned int* errors) {
 	*errors = 0;
+	//store window parameters
 	WINDOW_WIDTH = window_w;
 	WINDOW_HEIGHT = window_h;
 	RENDER_WIDTH = render_width;
+	
+	//call helper function for making SDL window with OpenGL context
 	if (MakeSDLGLWindowContext(&window, &context, gl_majorver, gl_minorver, window_x, window_y, WINDOW_WIDTH, WINDOW_HEIGHT, window_name.c_str()) == -1) {
 		std::cout << "Errors initializing window and/or context." << std::endl;
 		(*errors)++;
 	}
+
+	//initialize Glew
 	initGlew();
+
+	//call helper functions for making shaders
 	if (MakeShader(GL_VERTEX_SHADER, &vert_shader, getFileSource(vertex_shader_location.c_str(), &vs_length).c_str()) == -1) {
 		std::cout << "Errors initializing vertex shader." << std::endl;
 		(*errors)++;
@@ -19,10 +26,12 @@ Resources::Resources(int gl_majorver, int gl_minorver, int window_w, int window_
 		(*errors)++;
 	}
 
+	//store attributes
 	for (int n = 0; n < num_attribs; n++) {
 		vAttribs.push_back(attribs[n]);
 	}
 
+	//call helper function for making shader program
 	GLuint shaders[2] = { vert_shader, frag_shader };
 	if (MakeProgram(&program, 2, shaders, vAttribs) == -1) {
 		std::cout << "Errors initializing program." << std::endl;
@@ -87,10 +96,13 @@ int Resources::AddNewAttrib(std::string p_name, bool p_bUniform) {
 	Attrib attr;
 	attr.name = p_name;
 	attr.bUniform = p_bUniform;
+
+	//call different helper function based on whether attribute is a uniform or not
 	if (!attr.bUniform)
-		attr.index = MakeAttrib(program, attr.name.c_str());
+		attr.index = GetAttrib(program, attr.name.c_str());
 	else
-		attr.index = MakeUniform(program, attr.name.c_str());
+		attr.index = GetUniform(program, attr.name.c_str());
+	
 	if (attr.index == -1) {
 		std::cout << "Errors initializing attribute/uniform '" << attr.name << "'." << std::endl;
 		return -1;
